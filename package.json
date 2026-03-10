@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "lang": "^0.1.1",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "uview-plus": "^3.7.13"
   }
 }
