@@ -13,7 +13,7 @@
           <image src="/static/down2.png" mode="widthFix" />
           <text>下载</text>
         </view>
-        <view>
+        <view @click="share = true">
           <image src="/static/share.png" mode="widthFix" />
           <text>分享</text>
         </view>
@@ -22,19 +22,43 @@
   </view>
   <view class="title">相关推荐</view>
   <images></images>
+  <up-popup :show="share" @close="share = false" @open="share = true" mode="center" :round="20" :closeable="true">
+    <view class="proup">
+      <view class="p1">分享到你的社区</view>
+      <view class="imageslist">
+        <image v-for="(item, index) in imageslist" :key="index" :src="item.img" mode="widthFix" />
+      </view>
+    </view>
+  </up-popup>
 </template>
 
 <script setup>
-
+import { ref } from 'vue'
+const share = ref(true)
+const imageslist = [
+  {
+    img: '/static/icon1.png'
+  },
+  {
+    img: '/static/icon2.png'
+  },
+  {
+    img: '/static/icon3.png'
+  },
+  {
+    img: '/static/icon4.png'
+  }
+]
 </script>
 
 <style lang="scss" scoped>
-.title{
+.title {
   font-weight: bold;
-    margin-left: 100rpx;
-    font-size: 36rpx;
-   margin-bottom: 80rpx;
+  margin-left: 100rpx;
+  font-size: 36rpx;
+  margin-bottom: 80rpx;
 }
+
 .top {
   width: 100%;
   box-sizing: border-box;
@@ -74,21 +98,48 @@
       margin-left: 10rpx;
       color: #484848;
     }
-    .bottomright{
+
+    .bottomright {
       display: flex;
       align-items: center;
-      view{
+
+      view {
         border: 0.5px solid #CACACA;
         margin-left: 25rpx;
         padding: 10rpx 20rpx;
         border-radius: 50rpx;
       }
     }
-   image{
-    width: 30rpx;
-    vertical-align: middle;
-    margin-top: -5rpx;
-   }
+
+    image {
+      width: 30rpx;
+      vertical-align: middle;
+      margin-top: -5rpx;
+    }
+  }
+}
+
+.proup {
+  width: 16vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 440rpx;
+  .p1{
+    font-size: 40rpx;
+    font-weight: bold;
+  }
+  .imageslist{
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 60rpx;
+  }
+  image {
+    width: 70rpx;
+    // margin-right: 30rpx;
   }
 }
 </style>

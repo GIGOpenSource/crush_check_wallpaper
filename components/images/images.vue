@@ -7,7 +7,11 @@
 </template>
 
 <script>
-
+const details = () => {
+			uni.navigateTo({
+				url: '/pages/index/details'
+			});
+}
 </script>
 
 <style lang="scss" scoped>

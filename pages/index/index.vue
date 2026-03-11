@@ -52,11 +52,6 @@ import { ref } from 'vue'
 const shebeiType = ['电脑壁纸', '手机壁纸']
 const current = ref(0)
 const catetory = ref(0)
-const details = () => {
-			uni.navigateTo({
-				url: '/pages/index/details'
-			});
-}
 </script>
 
 <style lang="scss" scoped>
