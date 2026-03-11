@@ -12,6 +12,12 @@
 				"navigationBarTitleText": "WallpaperCicad",
 				"navigationStyle": "custom"
 			}
+		},{
+			"path": "pages/index/down",
+			"style": {
+				"navigationBarTitleText": "WallpaperCicad",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

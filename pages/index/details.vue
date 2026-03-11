@@ -9,7 +9,7 @@
     <view class="bottom">
       <view> <text>尺寸：</text> 3840*2180 <text>宽高比：</text> 16：9</view>
       <view class="bottomright">
-        <view>
+        <view @click="uni.navigateTo({url:'/pages/index/down'})">
           <image src="/static/down2.png" mode="widthFix" />
           <text>下载</text>
         </view>
@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref } from 'vue'
-const share = ref(true)
+const share = ref(false)
 const imageslist = [
   {
     img: '/static/icon1.png'
