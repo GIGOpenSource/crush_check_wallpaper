@@ -27,7 +27,8 @@
     <view class="proup">
       <view class="p1">分享到你的社区</view>
       <view class="imageslist">
-        <image v-for="(item, index) in imageslist" :key="index" :src="item.img" mode="widthFix" />
+        <image v-for="(item, index) in imageslist" :key="index" :src="item.img" mode="widthFix"
+          @click="share2(item.type)" />
       </view>
     </view>
   </up-popup>
@@ -44,29 +45,41 @@ const details = ref({})
 const data = ref({})
 const total = ref({})
 const likeList = ref([])
+const shareConfig = ref({
+  url: '', // 必传：要分享的链接
+  title: '', // 可选：分享文案标题
+  image: ''
+})
+const islike = ref(false)
 const imageslist = [
   {
-    img: '/markwallpapers/static/icon1.png'
+    img: '/markwallpapers/static/icon1.png',
+    type: 'whatsApp'
   },
   {
-    img: '/markwallpapers/static/icon2.png'
+    img: '/markwallpapers/static/icon2.png',
+    type: 'facebook'
   },
   {
-    img: '/markwallpapers/static/icon3.png'
+    img: '/markwallpapers/static/icon3.png',
+    type: 'twitter'
   },
   {
-    img: '/markwallpapers/static/icon4.png'
+    img: '/markwallpapers/static/icon4.png',
+    type: 'pinterest'
   }
 ]
 onLoad((e) => {
-  console.log(e,'eee')
+  console.log(e, 'eee')
   if (e.params) {
     let params = JSON.parse(decodeURIComponent(e.params))
     data.value = params
+    islike.value = false
     getdetails()
-  }else if(e.like){
-     let like = JSON.parse(decodeURIComponent(e.like))
+  } else if (e.like) {
+    let like = JSON.parse(decodeURIComponent(e.like))
     details.value = like
+    islike.value = true
     getlike()
   }
 
@@ -116,6 +129,33 @@ const downloadImage = (url) => {
     title: '下载成功',
     icon: 'none'
   });
+}
+//分享
+const share2 = (type) => {
+  let params = islike ? details.value : data.value
+  shareConfig.value.url = `https://markwallpapers.com#/pages/index/details?${islike ? 'like' : 'params'}=${encodeURIComponent(JSON.stringify(params))}`
+  shareConfig.value.title = details.value.name
+  shareConfig.value.image = details.value.url
+  console.log(shareConfig.value,'shareConfig.value')
+  if (type == 'twitter') {
+    const { url, title } = shareConfig.value
+    const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+    window.open(twitterUrl, '_blank');
+  } else if (type == 'facebook') {
+    const { url, title } = shareConfig.value
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    window.open(facebookUrl, '_blank');
+  } else if (type == 'whatsApp') {
+    const { url, title } = shareConfig.value
+    const text = `${title}\n${url}`;
+    const link = `https://web.whatsapp.com/send?text=${encodeURIComponent(title)}`;
+    window.open(link, "_blank");
+  } else if (type == 'pinterest') {
+    const { url,image,title } = shareConfig.value
+    const link = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(title)}`;
+    window.open(link, "_blank");
+  }
+
 }
 </script>
 
