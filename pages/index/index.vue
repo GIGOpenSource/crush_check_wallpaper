@@ -48,17 +48,21 @@
 
 <script setup>
 import { getWallpapersList,getWallpapersTags } from '@/api/index.js'
+import {
+  onReachBottom
+} from '@dcloudio/uni-app'
 import { ref, onMounted, watch } from 'vue'
 const shebeiType = ['电脑壁纸', '手机壁纸']
 const current = ref(0)
 const catetory = ref(0)
-const pages = ref(1)
+const pages = ref(1)//当前页面
 const name = ref('')
 const list = ref([]) //壁纸列表
 const tagList = ref([]) //标签
 const tagNum = ref('')
 const tag_id = ref('')
 const media_live = ref(false)
+const totalPages = ref('') //总页码
 const cateList = ref([
     {
         id: false,
@@ -68,8 +72,12 @@ const cateList = ref([
         name: '动态'
     }
 ])
-
-  
+//初始化数据
+const init = () => {
+  pages.value = 1
+  list.value = []
+  getlist()
+}
 // 选择 
 const selectItem = (item) => {  
   console.log(item);  
@@ -86,12 +94,14 @@ const getlist = () => {
 		platform: current.value == 0 ? 'PC' : 'PHONE',
 	}
 	getWallpapersList(params).then(res => {
-		list.value = res.data.results.map(item => {
+		let end = res.data.results.map(item => {
 			return {
 				...item,
 				show: false
 			}
 		})
+		list.value = [...list.value,...end]
+		totalPages.value = res.data.pagination.total_pages
 	})
 }
 //获取导航
@@ -105,11 +115,17 @@ const getTags = () => {
 		tagNum.value = res.data.pagination.total_pages
 		tag_id.value = res.data.results[0].tag
 	})
-	getlist()
+	init()
 }
 const search = () => {
-	getlist()
+	init()
 }
+//下拉刷新
+onReachBottom(() => {
+     if(pages.value == totalPages.value) return
+	 pages.value++
+	 getlist()
+})
 onMounted(() => {
 	
 	getTags()
@@ -117,7 +133,7 @@ onMounted(() => {
 
 watch(() => [current.value,media_live.value,tag_id.value],
 	() => {
-		getlist()
+		init()
 	}
 )
 </script>

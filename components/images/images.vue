@@ -1,6 +1,6 @@
 <template>
 	<view class="waterfall-container">
-		<view class="waterfall-item" v-for="(item, index) in info"  @click="details(index)" 
+		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index,item)"
 			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="item">
 			<image :src="item.url" mode="widthFix" />
 			<view class="mengceng" v-if="item.show">
@@ -26,15 +26,22 @@ const props = defineProps({
 		default: () => ({})
 	}
 })
-const details = (index) => {
-	let params = {
-		...props.dataItem,
-		currentPage: index + 1,
-		pageSize: 1,
+const details = (index,item) => {
+	if (props.dataItem.tag_id) {
+		let params = {
+			...props.dataItem,
+			currentPage: index + 1,
+			pageSize: 1,
+		}
+		uni.navigateTo({
+			url: `/pages/index/details?params=${encodeURIComponent(JSON.stringify(params))}`
+		});
+	}else{
+		uni.navigateTo({
+			url: `/pages/index/details?like=${encodeURIComponent(JSON.stringify(item))}`
+		});
 	}
-	uni.navigateTo({
-		url: `/pages/index/details?params=${encodeURIComponent(JSON.stringify(params))}`
-	});
+
 }
 const handleMouseOver = (index) => {
 	props.info[index].show = true

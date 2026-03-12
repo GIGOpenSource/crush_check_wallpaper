@@ -14,4 +14,8 @@ export const getWallpapersList = (params) => {
 export const getWallpapersTags = (params) => {
 	return getRequest(`/api/wallpapers/navigation_tag/`,params)
 }
+//相关推荐
+export const guessLike = (wallpaper_id) => {
+	return getRequest(`/api/wallpapers/wallpaper/guess_you_like/`,{wallpaper_id})
+}
 

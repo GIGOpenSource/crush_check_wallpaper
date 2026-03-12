@@ -7,9 +7,10 @@
       <view class="left" @click="up"><up-icon name="arrow-rightward" color="#272636" size="20"></up-icon></view>
     </view>
     <view class="bottom">
-      <view> <text>尺寸：</text> {{ details.width }}*{{ details.height }} <text>宽高比：</text> {{ details.aspect_ratio }}</view>
+      <view> <text>尺寸：</text> {{ details.width }}*{{ details.height }} <text>宽高比：</text> {{ details.aspect_ratio }}
+      </view>
       <view class="bottomright">
-        <view  @click="downloadImage(details.url)">
+        <view @click="downloadImage(details.url)">
           <image src="/static/down2.png" mode="widthFix" />
           <text>下载</text>
         </view>
@@ -21,7 +22,7 @@
     </view>
   </view>
   <view class="title">相关推荐</view>
-  <images></images>
+  <images :info="likeList"></images>
   <up-popup :show="share" @close="share = false" @open="share = true" mode="center" :round="20" :closeable="true">
     <view class="proup">
       <view class="p1">分享到你的社区</view>
@@ -34,7 +35,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getWallpapersList } from '@/api/index.js'
+import { getWallpapersList, guessLike } from '@/api/index.js'
 import {
   onLoad
 } from '@dcloudio/uni-app'
@@ -42,61 +43,79 @@ const share = ref(false)
 const details = ref({})
 const data = ref({})
 const total = ref({})
+const likeList = ref([])
 const imageslist = [
   {
-    img: '/static/icon1.png'
+    img: '/markwallpapers/static/icon1.png'
   },
   {
-    img: '/static/icon2.png'
+    img: '/markwallpapers/static/icon2.png'
   },
   {
-    img: '/static/icon3.png'
+    img: '/markwallpapers/static/icon3.png'
   },
   {
-    img: '/static/icon4.png'
+    img: '/markwallpapers/static/icon4.png'
   }
 ]
 onLoad((e) => {
-  let params = JSON.parse(decodeURIComponent(e.params))
-  data.value = params
-  getdetails()
+  console.log(e,'eee')
+  if (e.params) {
+    let params = JSON.parse(decodeURIComponent(e.params))
+    data.value = params
+    getdetails()
+  }else if(e.like){
+     let like = JSON.parse(decodeURIComponent(e.like))
+    details.value = like
+    getlike()
+  }
+
 })
 const getdetails = () => {
   getWallpapersList(data.value).then(res => {
     details.value = res.data.results[0]
     total.value = res.data.pagination.total
+    getlike()
+  })
+
+}
+//相关推荐
+const getlike = () => {
+  guessLike(details.value.id).then(res => {
+    console.log('猜你喜欢', res.data)
+    likeList.value = res.data
   })
 }
 //上一个
 const back = () => {
-  if(data.value.currentPage == 1){
-       data.value.currentPage = total.value
-    }else{
-       data.value.currentPage--
-    }
-    getdetails()
+  if (data.value.currentPage == 1) {
+    data.value.currentPage = total.value
+  } else {
+    data.value.currentPage--
+  }
+  getdetails()
 }
 //下一个
 const up = () => {
-    if(data.value.currentPage == total.value){
-       data.value.currentPage = 1
-    }else{
-      data.value.currentPage++
-    }
-     getdetails()
+  if (data.value.currentPage == total.value) {
+    data.value.currentPage = 1
+  } else {
+    data.value.currentPage++
+  }
+  getdetails()
 }
 const downloadImage = (url) => {
-	const link = document.createElement('a');
-	link.download = `img_${Date.now()}.png`;
-	link.href = url;
-	document.body.appendChild(link);
-	link.click();
-	document.body.removeChild(link);
-	uni.hideLoading();
-	uni.showToast({
-		title: '下载成功',
-		icon: 'none'
-	});
+  const link = document.createElement('a');
+  link.download = `img_${Date.now()}.png`;
+  link.href = url;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  uni.hideLoading();
+  uni.showToast({
+    title: '下载成功',
+    icon: 'none'
+  });
 }
 </script>
 
@@ -169,7 +188,7 @@ const downloadImage = (url) => {
 }
 
 .proup {
-  width: 16vw;
+  width: 20vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -182,7 +201,7 @@ const downloadImage = (url) => {
   }
 
   .imageslist {
-    width: 70%;
+    width: 75%;
     display: flex;
     align-items: center;
     justify-content: space-between;
