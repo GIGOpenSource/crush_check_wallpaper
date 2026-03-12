@@ -22,7 +22,7 @@ const props = defineProps({
 		default: () => ([])
 	},
 	dataItem: {
-		type: Array,
+		type: Object,
 		default: () => ({})
 	}
 })

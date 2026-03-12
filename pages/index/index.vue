@@ -5,16 +5,17 @@
 			<view class="topLeft">
 				<image src="/static/logo.png" class="logo" mode="widthFix" />
 				<view class="type">
-					<up-select v-model:current="media_live" :label="media_live ? '动态':'静态'" :options="cateList" @select="selectItem"></up-select>
+					<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'" :options="cateList"
+						@select="selectItem"></up-select>
 				</view>
-				
+
 				<view class="shebei">
 					<view v-for="(item, index) in shebeiType" :key="item" :class="current == index ? 'current' : ''"
 						@click="current = index">{{ item }}</view>
 				</view>
 				<view class="search">
 					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
-					<image src="/static/search.png" mode="widthFix" @click="search"/>
+					<image src="/static/search.png" mode="widthFix" @click="search" />
 				</view>
 			</view>
 			<view class="topRight" @click="uni.navigateTo({ url: '/pages/index/down' })">
@@ -33,23 +34,28 @@
 		</view>
 		<!-- 分类 -->
 		<view class="catetory">
-			<swiper class="swiper">
+			<swiper class="swiper" @change="changeCatetory">
 				<swiper-item class="swiper-item" v-for="item in tagNum" :key="item">
-					<view v-for="(item, index) in tagList" :class="catetory == index ? 'current' : ''"
-						@click="catetory = index,tag_id = item.tag">{{ item.nav_name }}</view>
-					<up-icon name="arrow-right" color="#6B6B6B" size="20"></up-icon>
+					<up-icon name="arrow-left" color="#6B6B6B" size="20" @click="catetoryDown"
+						v-if="tagspages > 1"></up-icon>
+					<view class="sign" v-for="(item, index) in tagList" :key="index">
+						<view :class="catetory == index ? 'current' : ''" @click="catetory = index, tag_id = item.tag">
+							{{ item.nav_name }}</view>
+					</view>
+					<up-icon name="arrow-right" color="#6B6B6B" size="20" @click="catetoryUp"
+						v-if="tagspages !== tagNum"></up-icon>
 				</swiper-item>
 			</swiper>
 		</view>
 		<!-- 内容 -->
-		<images :info="list" :dataItem="{name,tag_id,media_live,platform:current == 0 ? 'PC' : 'PHONE'}"></images>
+		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }"></images>
 	</view>
 </template>
 
 <script setup>
-import { getWallpapersList,getWallpapersTags } from '@/api/index.js'
+import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
 import {
-  onReachBottom
+	onReachBottom
 } from '@dcloudio/uni-app'
 import { ref, onMounted, watch } from 'vue'
 const shebeiType = ['电脑壁纸', '手机壁纸']
@@ -59,30 +65,33 @@ const pages = ref(1)//当前页面
 const name = ref('')
 const list = ref([]) //壁纸列表
 const tagList = ref([]) //标签
-const tagNum = ref('')
+
 const tag_id = ref('')
 const media_live = ref(false)
 const totalPages = ref('') //总页码
+
+const tagspages = ref(1) //标签当前页
+const tagNum = ref('') //总计
 const cateList = ref([
-    {
-        id: false,
-        name: '静态'
-    },{
-        id: true,
-        name: '动态'
-    }
+	{
+		id: false,
+		name: '静态'
+	}, {
+		id: true,
+		name: '动态'
+	}
 ])
 //初始化数据
 const init = () => {
-  pages.value = 1
-  list.value = []
-  getlist()
+	pages.value = 1
+	list.value = []
+	getlist()
 }
 // 选择 
-const selectItem = (item) => {  
-  console.log(item);  
-  media_live.value = item.id
-}; 
+const selectItem = (item) => {
+	console.log(item);
+	media_live.value = item.id
+};
 //获取壁纸列表
 const getlist = () => {
 	let params = {
@@ -100,38 +109,65 @@ const getlist = () => {
 				show: false
 			}
 		})
-		list.value = [...list.value,...end]
+		list.value = [...list.value, ...end]
 		totalPages.value = res.data.pagination.total_pages
 	})
 }
 //获取导航
 const getTags = () => {
 	let params = {
-		currentPage:1,
-		pageSize:10
+		currentPage: tagspages.value,
+		pageSize: 10
 	}
 	getWallpapersTags(params).then(res => {
 		tagList.value = res.data.results
 		tagNum.value = res.data.pagination.total_pages
 		tag_id.value = res.data.results[0].tag
+		console.log(tagList.value, 'tagList.value')
+		init()
 	})
-	init()
+
 }
 const search = () => {
 	init()
 }
-//下拉刷新
+//分类下一页
+const catetoryUp = () => {
+	if (tagspages.value == tagNum.value) return
+	catetory.value = 0
+	tagList.value = []
+	tagspages.value++
+	getTags()
+
+}
+
+const catetoryDown = () => {
+	if (tagspages.value == 1) return
+	catetory.value = 0
+	tagList.value = []
+	tagspages.value--
+	getTags()
+}
+//滑动
+const changeCatetory = (e) => {
+	catetory.value = 0
+	tagList.value = []
+	tagspages.value = e.detail.current + 1
+	getTags()
+
+}
+//导航刷新
 onReachBottom(() => {
-     if(pages.value == totalPages.value) return
-	 pages.value++
-	 getlist()
+	if (pages.value == totalPages.value) return
+	pages.value++
+	getlist()
 })
 onMounted(() => {
-	
+
 	getTags()
 })
 
-watch(() => [current.value,media_live.value,tag_id.value],
+watch(() => [current.value, media_live.value, tag_id.value],
 	() => {
 		init()
 	}
@@ -273,11 +309,16 @@ watch(() => [current.value,media_live.value,tag_id.value],
 		width: 100%;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 
-		view {
-			padding: 5rpx 25rpx;
-			border-radius: 40rpx;
+		.sign {
+			width: 10%;
+
+			view {
+				width: 60%;
+				padding: 10rpx 0;
+				text-align: center;
+				border-radius: 40rpx;
+			}
 		}
 
 		.current {
