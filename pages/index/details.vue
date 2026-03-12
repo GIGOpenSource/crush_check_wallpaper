@@ -1,15 +1,15 @@
 <template>
   <view class="top">
-    <view class="name">壁纸名称</view>
+    <view class="name">{{ details.name }}</view>
     <view class="images">
-      <view class="left"><up-icon name="arrow-leftward" color="#272636" size="20"></up-icon></view>
-      <image src="/static/img.png" mode="widthFix" />
-      <view class="left"><up-icon name="arrow-rightward" color="#272636" size="20"></up-icon></view>
+      <view class="left" @click="back"><up-icon name="arrow-leftward" color="#272636" size="20"></up-icon></view>
+      <image :src="details.url" mode="widthFix" />
+      <view class="left" @click="up"><up-icon name="arrow-rightward" color="#272636" size="20"></up-icon></view>
     </view>
     <view class="bottom">
-      <view> <text>尺寸：</text> 3840*2180 <text>宽高比：</text> 16：9</view>
+      <view> <text>尺寸：</text> {{ details.width }}*{{ details.height }} <text>宽高比：</text> {{ details.aspect_ratio }}</view>
       <view class="bottomright">
-        <view @click="uni.navigateTo({url:'/pages/index/down'})">
+        <view  @click="downloadImage(details.url)">
           <image src="/static/down2.png" mode="widthFix" />
           <text>下载</text>
         </view>
@@ -34,7 +34,14 @@
 
 <script setup>
 import { ref } from 'vue'
+import { getWallpapersList } from '@/api/index.js'
+import {
+  onLoad
+} from '@dcloudio/uni-app'
 const share = ref(false)
+const details = ref({})
+const data = ref({})
+const total = ref({})
 const imageslist = [
   {
     img: '/static/icon1.png'
@@ -49,6 +56,48 @@ const imageslist = [
     img: '/static/icon4.png'
   }
 ]
+onLoad((e) => {
+  let params = JSON.parse(decodeURIComponent(e.params))
+  data.value = params
+  getdetails()
+})
+const getdetails = () => {
+  getWallpapersList(data.value).then(res => {
+    details.value = res.data.results[0]
+    total.value = res.data.pagination.total
+  })
+}
+//上一个
+const back = () => {
+  if(data.value.currentPage == 1){
+       data.value.currentPage = total.value
+    }else{
+       data.value.currentPage--
+    }
+    getdetails()
+}
+//下一个
+const up = () => {
+    if(data.value.currentPage == total.value){
+       data.value.currentPage = 1
+    }else{
+      data.value.currentPage++
+    }
+     getdetails()
+}
+const downloadImage = (url) => {
+	const link = document.createElement('a');
+	link.download = `img_${Date.now()}.png`;
+	link.href = url;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	uni.hideLoading();
+	uni.showToast({
+		title: '下载成功',
+		icon: 'none'
+	});
+}
 </script>
 
 <style lang="scss" scoped>
@@ -126,17 +175,20 @@ const imageslist = [
   justify-content: center;
   flex-direction: column;
   height: 440rpx;
-  .p1{
+
+  .p1 {
     font-size: 40rpx;
     font-weight: bold;
   }
-  .imageslist{
+
+  .imageslist {
     width: 70%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 60rpx;
   }
+
   image {
     width: 70rpx;
     // margin-right: 30rpx;

@@ -17,7 +17,7 @@
 					<image src="/static/search.png" mode="widthFix" @click="search"/>
 				</view>
 			</view>
-			<view class="topRight">
+			<view class="topRight" @click="uni.navigateTo({ url: '/pages/index/down' })">
 				<up-icon name="more-dot-fill" color="#000" size="22"></up-icon>
 				<view class="btn">
 					<image src="/static/down.png" mode="widthFix" />
@@ -34,15 +34,15 @@
 		<!-- 分类 -->
 		<view class="catetory">
 			<swiper class="swiper">
-				<swiper-item class="swiper-item">
-					<view v-for="(item, index) in 10" :class="catetory == index ? 'current' : ''"
-						@click="catetory = index">自然风景</view>
+				<swiper-item class="swiper-item" v-for="item in tagNum" :key="item">
+					<view v-for="(item, index) in tagList" :class="catetory == index ? 'current' : ''"
+						@click="catetory = index,tag_id = item.tag">{{ item.nav_name }}</view>
 					<up-icon name="arrow-right" color="#6B6B6B" size="20"></up-icon>
 				</swiper-item>
 			</swiper>
 		</view>
 		<!-- 内容 -->
-		<images :info="list"></images>
+		<images :info="list" :dataItem="{name,tag_id,media_live,platform:current == 0 ? 'PC' : 'PHONE'}"></images>
 	</view>
 </template>
 
@@ -54,7 +54,10 @@ const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)
 const name = ref('')
-const list = ref([]) 
+const list = ref([]) //壁纸列表
+const tagList = ref([]) //标签
+const tagNum = ref('')
+const tag_id = ref('')
 const media_live = ref(false)
 const cateList = ref([
     {
@@ -65,6 +68,7 @@ const cateList = ref([
         name: '动态'
     }
 ])
+
   
 // 选择 
 const selectItem = (item) => {  
@@ -77,7 +81,7 @@ const getlist = () => {
 		currentPage: pages.value,
 		pageSize: 20,
 		name: name.value,
-		tag_id: '',//标签id
+		tag_id: tag_id.value,//标签id
 		media_live: media_live.value,//静态false或动态true
 		platform: current.value == 0 ? 'PC' : 'PHONE',
 	}
@@ -97,18 +101,21 @@ const getTags = () => {
 		pageSize:10
 	}
 	getWallpapersTags(params).then(res => {
-		console.log('res',res)
+		tagList.value = res.data.results
+		tagNum.value = res.data.pagination.total_pages
+		tag_id.value = res.data.results[0].tag
 	})
+	getlist()
 }
 const search = () => {
 	getlist()
 }
 onMounted(() => {
-	getlist()
+	
 	getTags()
 })
 
-watch(() => [current.value,media_live.value],
+watch(() => [current.value,media_live.value,tag_id.value],
 	() => {
 		getlist()
 	}
@@ -134,6 +141,7 @@ watch(() => [current.value,media_live.value],
 	left: 0;
 	top: 0;
 	width: 100%;
+	z-index: 999;
 
 	.topLeft {
 		display: flex;

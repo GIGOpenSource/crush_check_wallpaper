@@ -1,11 +1,11 @@
 <template>
 	<view class="waterfall-container">
-		<view class="waterfall-item" v-for="(item,index) in info" @click="details" @mouseover="handleMouseOver(index)"
-			@mouseout="handleMouseOut(index)" :key="item">
+		<view class="waterfall-item" v-for="(item, index) in info"  @click="details(index)" 
+			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="item">
 			<image :src="item.url" mode="widthFix" />
 			<view class="mengceng" v-if="item.show">
-				<view class="name">图片标签/{{ item.name }}</view>
-				<view class="right">
+				<view class="name">{{ item.name }}</view>
+				<view class="right" @click.stop="downloadImage(item.url)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
 					<text>下载</text>
 				</view>
@@ -15,16 +15,25 @@
 </template>
 
 <script setup>
-import { ref} from 'vue'
+import { ref } from 'vue'
 const props = defineProps({
 	info: {
 		type: Array,
 		default: () => ([])
+	},
+	dataItem: {
+		type: Array,
+		default: () => ({})
 	}
 })
-const details = () => {
+const details = (index) => {
+	let params = {
+		...props.dataItem,
+		currentPage: index + 1,
+		pageSize: 1,
+	}
 	uni.navigateTo({
-		url: '/pages/index/details'
+		url: `/pages/index/details?params=${encodeURIComponent(JSON.stringify(params))}`
 	});
 }
 const handleMouseOver = (index) => {
@@ -33,6 +42,20 @@ const handleMouseOver = (index) => {
 const handleMouseOut = (index) => {
 	props.info[index].show = false
 }
+const downloadImage = (url) => {
+	const link = document.createElement('a');
+	link.download = `img_${Date.now()}.png`;
+	link.href = url;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	uni.hideLoading();
+	uni.showToast({
+		title: '下载成功',
+		icon: 'none'
+	});
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -62,7 +85,7 @@ const handleMouseOut = (index) => {
 			color: #fff;
 
 			.name {
-				width: 60%;
+				width: 70%;
 				display: -webkit-box;
 				overflow: hidden;
 				-webkit-line-clamp: 1;
