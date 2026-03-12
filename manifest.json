@@ -1,5 +1,5 @@
 {
-    "name" : "WallpaperCicad",
+    "name" : "markwallpapers",
     "appid" : "__UNI__90E8F9A",
     "description" : "",
     "versionName" : "1.0.0",
@@ -74,7 +74,9 @@
             "port" : 3000
         },
         "router" : {
-            "mode" : "hash"
-        }
+            "mode" : "hash",
+            "base" : "/markwallpapers"
+        },
+        "title" : "壁纸应用"
     }
 }

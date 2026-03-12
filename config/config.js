@@ -1,7 +1,7 @@
 // 开发中？
 const develop = true
-let host = 'http://192.168.77.43:8002';
-if (develop) host = 'http://192.168.77.43:8002'; 
+let host = 'https://markwallpapers.com';
+if (develop) host = 'https://markwallpapers.com'; 
 else '';
 console.log = develop ? console.log : () => {};
 console.info = develop ? console.info : () => {};

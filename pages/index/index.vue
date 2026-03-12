@@ -5,16 +5,16 @@
 			<view class="topLeft">
 				<image src="/static/logo.png" class="logo" mode="widthFix" />
 				<view class="type">
-					<text>静态</text>
-					<view><up-icon name="arrow-down" color="#6B6B6B" size="20"></up-icon></view>
+					<up-select v-model:current="media_live" :label="media_live ? '动态':'静态'" :options="cateList" @select="selectItem"></up-select>
 				</view>
+				
 				<view class="shebei">
 					<view v-for="(item, index) in shebeiType" :key="item" :class="current == index ? 'current' : ''"
 						@click="current = index">{{ item }}</view>
 				</view>
 				<view class="search">
-					<input type="text" placeholder="电脑壁纸4K..." v-model="name">
-					<image src="/static/search.png" mode="widthFix" />
+					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
+					<image src="/static/search.png" mode="widthFix" @click="search"/>
 				</view>
 			</view>
 			<view class="topRight">
@@ -42,33 +42,77 @@
 			</swiper>
 		</view>
 		<!-- 内容 -->
-		<images></images>
-
+		<images :info="list"></images>
 	</view>
 </template>
 
 <script setup>
-import { getWallpapersList } from '@/api/index.js'
-import { ref ,onMounted} from 'vue'
+import { getWallpapersList,getWallpapersTags } from '@/api/index.js'
+import { ref, onMounted, watch } from 'vue'
 const shebeiType = ['电脑壁纸', '手机壁纸']
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)
 const name = ref('')
+const list = ref([]) 
+const media_live = ref(false)
+const cateList = ref([
+    {
+        id: false,
+        name: '静态'
+    },{
+        id: true,
+        name: '动态'
+    }
+])
+  
+// 选择 
+const selectItem = (item) => {  
+  console.log(item);  
+  media_live.value = item.id
+}; 
+//获取壁纸列表
 const getlist = () => {
 	let params = {
-		currentPage:pages.value,
-		pageSize:20,
-		name:name.value,
-		tag_id:''
+		currentPage: pages.value,
+		pageSize: 20,
+		name: name.value,
+		tag_id: '',//标签id
+		media_live: media_live.value,//静态false或动态true
+		platform: current.value == 0 ? 'PC' : 'PHONE',
 	}
 	getWallpapersList(params).then(res => {
-		console.log(res,'rddd')
+		list.value = res.data.results.map(item => {
+			return {
+				...item,
+				show: false
+			}
+		})
 	})
 }
+//获取导航
+const getTags = () => {
+	let params = {
+		currentPage:1,
+		pageSize:10
+	}
+	getWallpapersTags(params).then(res => {
+		console.log('res',res)
+	})
+}
+const search = () => {
+	getlist()
+}
 onMounted(() => {
-   getlist()
+	getlist()
+	getTags()
 })
+
+watch(() => [current.value,media_live.value],
+	() => {
+		getlist()
+	}
+)
 </script>
 
 <style lang="scss" scoped>
@@ -218,5 +262,4 @@ onMounted(() => {
 		}
 	}
 }
-
 </style>

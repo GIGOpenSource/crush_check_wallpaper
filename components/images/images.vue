@@ -1,10 +1,10 @@
 <template>
 	<view class="waterfall-container">
-		<view class="waterfall-item" v-for="item in 10" @click="details" @mouseover="handleMouseOver"
-			@mouseout="handleMouseOut">
-			<image src="/static/img.png" mode="widthFix" />
-			<view class="mengceng" v-if="show">
-				<view>图片标签/名称</view>
+		<view class="waterfall-item" v-for="(item,index) in info" @click="details" @mouseover="handleMouseOver(index)"
+			@mouseout="handleMouseOut(index)" :key="item">
+			<image :src="item.url" mode="widthFix" />
+			<view class="mengceng" v-if="item.show">
+				<view class="name">图片标签/{{ item.name }}</view>
 				<view class="right">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
 					<text>下载</text>
@@ -15,18 +15,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const show = ref(false)
+import { ref} from 'vue'
+const props = defineProps({
+	info: {
+		type: Array,
+		default: () => ([])
+	}
+})
 const details = () => {
 	uni.navigateTo({
 		url: '/pages/index/details'
 	});
 }
-const handleMouseOver = () => {
-	show.value = true
+const handleMouseOver = (index) => {
+	props.info[index].show = true
 }
-const handleMouseOut = () => {
-	show.value = false
+const handleMouseOut = (index) => {
+	props.info[index].show = false
 }
 </script>
 
@@ -42,6 +47,7 @@ const handleMouseOut = () => {
 		position: relative;
 		border-radius: 20rpx;
 		overflow: hidden;
+
 		.mengceng {
 			width: 100%;
 			height: 90rpx;
@@ -54,6 +60,15 @@ const handleMouseOut = () => {
 			padding: 0 20rpx;
 			box-sizing: border-box;
 			color: #fff;
+
+			.name {
+				width: 60%;
+				display: -webkit-box;
+				overflow: hidden;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+
 			.right {
 				display: flex;
 				background: rgba(236, 229, 229, 0.25);
@@ -70,5 +85,4 @@ const handleMouseOut = () => {
 
 	}
 }
-
- </style>
+</style>

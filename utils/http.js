@@ -31,7 +31,7 @@ function request(url, params, other) {
 		...other
 	};
 	// 防止莫名其妙token有时不刷新问题
-	other.header['token'] = token
+	// other.header['token'] = token
 	return new Promise((resolve, reject) => {
 		if (other.stopRepeat) {
 			if (requestRecord.url === true) {
