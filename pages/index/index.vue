@@ -13,7 +13,7 @@
 						@click="current = index">{{ item }}</view>
 				</view>
 				<view class="search">
-					<input type="text" placeholder="电脑壁纸4K...">
+					<input type="text" placeholder="电脑壁纸4K..." v-model="name">
 					<image src="/static/search.png" mode="widthFix" />
 				</view>
 			</view>
@@ -48,10 +48,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { getWallpapersList } from '@/api/index.js'
+import { ref ,onMounted} from 'vue'
 const shebeiType = ['电脑壁纸', '手机壁纸']
 const current = ref(0)
 const catetory = ref(0)
+const pages = ref(1)
+const name = ref('')
+const getlist = () => {
+	let params = {
+		currentPage:pages.value,
+		pageSize:20,
+		name:name.value,
+		tag_id:''
+	}
+	getWallpapersList(params).then(res => {
+		console.log(res,'rddd')
+	})
+}
+onMounted(() => {
+   getlist()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -11,7 +11,7 @@ const token = uni.getStorageSync('token') || ''
 let httpConfig = {
 	header: {
 		'Content-Type': "application/json",
-		'Authorization':'Token ' +  token,
+		// 'Authorization':'Token ' +  token,
 		'is-dev': 'true'
 	},
 	method: 'POST',

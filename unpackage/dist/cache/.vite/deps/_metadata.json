@@ -2,18 +2,18 @@
   "hash": "ca54d6a2",
   "configHash": "466b6909",
   "lockfileHash": "a5174a5c",
-  "browserHash": "f92d9234",
+  "browserHash": "84b32de1",
   "optimized": {
-    "uview-plus": {
-      "src": "../../../../../node_modules/uview-plus/index.js",
-      "file": "uview-plus.js",
-      "fileHash": "6df4f1d5",
-      "needsInterop": false
-    },
     "pinia-plugin-persistedstate": {
       "src": "../../../../../node_modules/pinia-plugin-persistedstate/dist/index.js",
       "file": "pinia-plugin-persistedstate.js",
       "fileHash": "ef402ca4",
+      "needsInterop": false
+    },
+    "uview-plus": {
+      "src": "../../../../../node_modules/uview-plus/index.js",
+      "file": "uview-plus.js",
+      "fileHash": "6df4f1d5",
       "needsInterop": false
     }
   },
