@@ -8,5 +8,5 @@ import { postRequest, getRequest } from "@/utils/http.js";
 
 
 export const getWallpapersList = (params) => {
-	return getRequest(`/wallpapers/wallpaper/`,params)
+	return getRequest(`/api/wallpapers/wallpaper/`,params)
 }

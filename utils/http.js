@@ -4,7 +4,7 @@ import {
 // 验证token是否失效
 var expired = false;
 let requestRecord = {
-
+  
 }
 
 const token = uni.getStorageSync('token') || ''

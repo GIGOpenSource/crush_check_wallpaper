@@ -1,5 +1,5 @@
 {
-    "name" : "a",
+    "name" : "WallpaperCicad",
     "appid" : "__UNI__90E8F9A",
     "description" : "",
     "versionName" : "1.0.0",
@@ -71,7 +71,10 @@
     "vueVersion" : "3",
     "h5" : {
         "devServer" : {
-            "port" : 8888
+            "port" : 3000
+        },
+        "router" : {
+            "mode" : "hash"
         }
     }
 }
