@@ -44,7 +44,7 @@ import { getWallpapersList, guessLike } from '@/api/index.js'
 import {
   onLoad
 } from '@dcloudio/uni-app'
-const share = ref(true)
+const share = ref(false)
 const details = ref({})
 const data = ref({})
 const total = ref({})
