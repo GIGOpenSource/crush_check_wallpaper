@@ -30,6 +30,10 @@
         <image v-for="(item, index) in imageslist" :key="index" :src="item.img" mode="widthFix"
           @click="share2(item.type)" />
       </view>
+      <view class="copy">
+        <view class="copyurl">{{ copyurl }}</view>
+        <view @click="copy">复制</view>
+      </view>
     </view>
   </up-popup>
 </template>
@@ -40,7 +44,7 @@ import { getWallpapersList, guessLike } from '@/api/index.js'
 import {
   onLoad
 } from '@dcloudio/uni-app'
-const share = ref(false)
+const share = ref(true)
 const details = ref({})
 const data = ref({})
 const total = ref({})
@@ -69,6 +73,7 @@ const imageslist = [
     type: 'pinterest'
   }
 ]
+const copyurl = ref('')
 onLoad((e) => {
   console.log(e, 'eee')
   if (e.params) {
@@ -82,6 +87,8 @@ onLoad((e) => {
     islike.value = true
     getlike()
   }
+  let data1 = islike.value ? details.value : data.value
+copyurl.value = `https://markwallpapers.com#/pages/index/details?${islike.value ? 'like' : 'params'}=${encodeURIComponent(JSON.stringify(data1))}`
 
 })
 const getdetails = () => {
@@ -130,13 +137,24 @@ const downloadImage = (url) => {
     icon: 'none'
   });
 }
+//复制
+const copy = () => {
+    uni.setClipboardData({
+        data: copyurl.value, 
+        success: () => {
+          uni.showToast({ title: '复制成功', icon: 'none' });
+        },
+        fail: (err) => {
+          uni.showToast({ title: '复制失败', icon: 'none' });
+        }
+      });
+}
 //分享
 const share2 = (type) => {
-  let params = islike ? details.value : data.value
-  shareConfig.value.url = `https://markwallpapers.com#/pages/index/details?${islike ? 'like' : 'params'}=${encodeURIComponent(JSON.stringify(params))}`
+  shareConfig.value.url = copyurl.value
   shareConfig.value.title = details.value.name
   shareConfig.value.image = details.value.url
-  console.log(shareConfig.value,'shareConfig.value')
+  console.log(shareConfig.value, 'shareConfig.value')
   if (type == 'twitter') {
     const { url, title } = shareConfig.value
     const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
@@ -151,7 +169,7 @@ const share2 = (type) => {
     const link = `https://web.whatsapp.com/send?text=${encodeURIComponent(title)}`;
     window.open(link, "_blank");
   } else if (type == 'pinterest') {
-    const { url,image,title } = shareConfig.value
+    const { url, image, title } = shareConfig.value
     const link = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(title)}`;
     window.open(link, "_blank");
   }
@@ -251,6 +269,27 @@ const share2 = (type) => {
   image {
     width: 70rpx;
     // margin-right: 30rpx;
+  }
+
+  .copy {
+    width: 90%;
+    border: 1px solid #E2E2E2;
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.3);
+    margin-top: 50rpx;
+    display: flex;
+    align-items: center;
+    padding: 20rpx 30rpx;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border-radius: 30rpx;
+    font-size: 24rpx;
+    .copyurl{
+      width: 80%;
+      display: -webkit-box;
+				overflow: hidden;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+    }
   }
 }
 </style>
