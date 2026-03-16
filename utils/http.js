@@ -53,7 +53,7 @@ function request(url, params, other) {
 			}, other.loadingTime);
 		}
 		uni.request({
-			url: host + url,
+			url: url,
 			data: params,
 			header: other.header,
 			method: other.method,
