@@ -1,11 +1,11 @@
 <template>
 	<view class="waterfall-container">
-		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index,item)"
+		<view class="waterfall-item" v-for="(item, index) in info" @click="downloadImage(item.url,item.name)"
 			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="item">
 			<image :src="item.url" mode="widthFix" />
 			<view class="mengceng" v-if="item.show">
 				<view class="name">{{ item.name }}</view>
-				<view class="right" @click.stop="downloadImage(item.url)">
+				<view class="right" @click.stop="downloadImage(item.url,item.name)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
 					<text>下载</text>
 				</view>
@@ -49,19 +49,56 @@ const handleMouseOver = (index) => {
 const handleMouseOut = (index) => {
 	props.info[index].show = false
 }
-const downloadImage = (url) => {
-	const link = document.createElement('a');
-	link.download = `img_${Date.now()}.png`;
-	link.href = url;
-	document.body.appendChild(link);
-	link.click();
-	document.body.removeChild(link);
-	uni.hideLoading();
-	uni.showToast({
-		title: '下载成功',
-		icon: 'none'
-	});
+const downloadImage = (url,name) => {
+	console.log(1111)
+	downloadImageH5(url, name);
 }
+const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
+  return new Promise((resolve, reject) => {
+    // 1. 处理本地图片路径（UniApp 本地路径转绝对路径）
+    if (imgUrl.startsWith('uni://') || imgUrl.startsWith('/')) {
+      imgUrl = uni.env.BASE_URL + imgUrl;
+    }
+
+    // 2. 创建图片对象，加载图片
+    const image = new Image();
+    // 关键：允许跨域（需后端配合配置跨域头 Access-Control-Allow-Origin）
+    image.crossOrigin = 'Anonymous';
+    image.src = imgUrl;
+
+    // 图片加载完成
+    image.onload = () => {
+      // 3. 创建画布，将图片绘制到画布
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+
+      // 4. 将画布转为 Blob 数据（解决跨域下载问题）
+      canvas.toBlob((blob) => {
+        // 5. 创建下载链接
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // 设置文件名（后缀自动匹配图片格式）
+        a.download = `${fileName}.${imgUrl.split('.').pop() || 'png'}`;
+        // 触发点击下载
+        a.click();
+
+        // 6. 释放资源
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        resolve('下载成功');
+      }, 'image/png'); // 默认为 png 格式，可根据需要修改
+    };
+
+    // 图片加载失败
+    image.onerror = (err) => {
+      reject(`下载失败：${err.message}，可能是图片跨域限制或地址错误`);
+    };
+  });
+};
 
 </script>
 
