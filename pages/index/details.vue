@@ -2,9 +2,9 @@
   <view class="top">
     <view class="name">{{ details.name }}</view>
     <view class="images">
-      <view class="left" @click="back"><up-icon name="arrow-leftward" color="#272636" size="20"></up-icon></view>
+      <view  @click="back"><up-icon name="arrow-left" color="#000" size="20"></up-icon></view>
       <image :src="details.url" mode="widthFix" />
-      <view class="left" @click="up"><up-icon name="arrow-rightward" color="#272636" size="20"></up-icon></view>
+      <view  @click="up"><up-icon name="arrow-right" color="#000" size="20"></up-icon></view>
     </view>
     <view class="bottom">
       <view> <text>尺寸：</text> {{ details.width }}*{{ details.height }} <text>宽高比：</text> {{ details.aspect_ratio }}
@@ -265,9 +265,10 @@ const share2 = (type) => {
     .bottomright {
       display: flex;
       align-items: center;
+      color: #767676;
 
       view {
-        border: 0.5px solid #CACACA;
+        border: 0.5px solid #767676;
         margin-left: 25rpx;
         padding: 10rpx 20rpx;
         border-radius: 50rpx;
@@ -288,15 +289,16 @@ const share2 = (type) => {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 440rpx;
+  height: 520rpx;
 
   .p1 {
-    font-size: 40rpx;
+    font-size: 44rpx;
     font-weight: bold;
+    padding-top: 40rpx;
   }
 
   .imageslist {
-    width: 75%;
+    width: 64%;
     display: flex;
     align-items: center;
     justify-content: space-between;

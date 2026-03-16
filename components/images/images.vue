@@ -1,6 +1,6 @@
 <template>
 	<view class="waterfall-container">
-		<view class="waterfall-item" v-for="(item, index) in info" @click="downloadImage(item.url,item.name)"
+		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index,item)"
 			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="item">
 			<image :src="item.url" mode="widthFix" />
 			<view class="mengceng" v-if="item.show">
@@ -50,7 +50,6 @@ const handleMouseOut = (index) => {
 	props.info[index].show = false
 }
 const downloadImage = (url,name) => {
-	console.log(1111)
 	downloadImageH5(url, name);
 }
 const downloadImageH5 = (imgUrl, fileName = 'download_img') => {

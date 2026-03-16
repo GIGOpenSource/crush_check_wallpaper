@@ -3,21 +3,21 @@
         <view class="back" @click="back">
             <image src="/static/back.png" mode="widthFix" />
             <text>返回首页</text>
-        </view>
-        <view class="t1">WallpaperCicada移动端</view>
-        <view class="t2">随时随地发现和设置精美壁纸</view>
+        </view> 
         <view class="content">
-            <view class="left">
-                <image src="/static/img2.png" mode="aspectFit" class="bizhi" />
-            </view>
             <view class="right">
-                <image src="/static/logo2.png" mode="widthFix" class="logo" />
+				<view class="t1">WallpaperCicada移动端</view>
+				<view class="t2">立即开始你的壁纸之旅</view>
+                <image src="/static/logo2.png" class="logo" />
                 <view class="bottom">
                     <image src="/static/ios.png" mode="widthFix" />
                     <image src="/static/apk.png" mode="widthFix" />
                     <image src="/static/google.png" mode="widthFix" />
                 </view>
             </view>
+			<view class="left">
+			    <image src="/static/img2.png" mode="aspectFit" class="bizhi" />
+			</view>
         </view>
     </view>
 </template>
@@ -57,8 +57,8 @@ const back = () => {
 }
 
 .t2 {
-    font-size: 28rpx;
-    margin-top: 20rpx;
+    font-size: 32rpx;
+    margin-top: -60rpx;
 }
 
 .content {
@@ -69,7 +69,7 @@ const back = () => {
     .left {
         width: 600rpx;
         height: 900rpx;
-        margin-right: 200rpx;
+        margin-left: 200rpx;
 
         image {
             width: 100%;
@@ -87,7 +87,8 @@ const back = () => {
         height: 900rpx;
 
         .logo {
-            width: 200rpx;
+            width: 500rpx;
+			height: 400rpx;
         }
     }
 
@@ -95,7 +96,7 @@ const back = () => {
         display: flex;
 
         image {
-            width: 200rpx;
+            width: 250rpx;
             margin-right: 20rpx;
         }
     }
