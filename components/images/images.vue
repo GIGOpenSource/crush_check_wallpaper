@@ -1,9 +1,9 @@
 <template>
 	<view class="waterfall-container">
 		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index,item)"
-			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="item">
+			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="index">
 			<image :src="item.url" mode="widthFix" />
-			<view class="mengceng" v-if="item.show">
+			<view class="mengceng" v-show="item.show">
 				<view class="name">{{ item.name }}</view>
 				<view class="right" @click.stop="downloadImage(item.url,item.name)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
