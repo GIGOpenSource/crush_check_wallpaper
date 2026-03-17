@@ -1,52 +1,89 @@
 <template>
 	<view class="page">
 		<!-- 头部 -->
-		<view class="top">
-			<view class="topLeft">
-				<image src="/static/logo.png" class="logo" mode="widthFix" />
-				<view class="type">
-					<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'" :options="cateList"
-						@select="selectItem"></up-select>
-				</view>
-
-				<view class="shebei">
-					<view v-for="(item, index) in shebeiType" :key="item" :class="current == index ? 'current' : ''"
-						@click="current = index">{{ item }}</view>
-				</view>
-				<view class="search">
-					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
-					<image src="/static/search.png" mode="widthFix" @click="search" />
-				</view>
-			</view>
-			<view class="topRight" @click="uni.navigateTo({ url: '/pages/index/down' })">
-				<up-icon name="more-dot-fill" color="#000" size="22"></up-icon>
-				<view class="btn">
-					<image src="/static/down.png" mode="widthFix" />
-					<text>下载移动端</text>
-				</view>
-			</view>
-		</view>
-		<view style="height:150rpx"></view>
-		<!-- 标题 -->
-		<view class="title" v-if="current == 0">
-			<view class="t1">WallpaperCicada</view>
-			<view>这里是全网优质高清壁纸聚集地，汇集风景、动漫、简约、游戏、影视等多种风格...</view>
-		</view>
-		<!-- 分类 -->
-		<view class="catetory">
-			<swiper class="swiper" @change="changeCatetory">
-				<swiper-item class="swiper-item" v-for="item in tagNum" :key="item">
-					<up-icon name="arrow-left" color="#6B6B6B" size="20" @click="catetoryDown"
-						v-if="tagspages > 1"></up-icon>
-					<view class="sign" v-for="(item, index) in tagList" :key="index">
-						<view :class="catetory == index ? 'current' : ''" @click="catetory = index, tag_id = item.tag">
-							{{ item.nav_name }}</view>
+		<view class="fixed" :style="current === 1 ? { boxShadow: '0px 4px 10px 0px rgba(0, 0, 0, 0.3)' } : {}">
+			<view class="top">
+				<view class="topLeft">
+					<image src="/static/logo.png" class="logo" mode="widthFix" />
+					<view class="search" v-if="current">
+						<image src="/static/search.png" mode="widthFix" @click="search" />
+						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
+						<view class="type">
+							<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'"
+								:options="cateList" @select="selectItem"></up-select>
+						</view>
 					</view>
-					<up-icon name="arrow-right" color="#6B6B6B" size="20" @click="catetoryUp"
-						v-if="tagspages !== tagNum"></up-icon>
+
+				</view>
+				<view class="topRight">
+					<view>
+						<up-select v-model:current="current" :label="current == 0 ? '电脑壁纸' : '手机壁纸'"
+							:options="shebeiType" @select="current = item.id"></up-select>
+					</view>
+					<text class="tiaokuan">条款</text>
+					<view class="btn" @click="uni.navigateTo({ url: '/pages/index/down' })">
+						<image src="/static/down.png" mode="widthFix" />
+						<text>下载移动端</text>
+					</view>
+				</view>
+			</view>
+			<!-- 手机分类 -->
+			<view class="catetory" v-if="current == 1">
+				<swiper class="swiper" @change="changeCatetory">
+					<swiper-item class="swiper-item" v-for="item in tagNum" :key="item">
+						<up-icon name="arrow-left" color="#6B6B6B" size="20" @click="catetoryDown"
+							v-if="tagspages > 1"></up-icon>
+						<view class="sign" v-for="(item, index) in tagList" :key="index">
+							<view :class="catetory == index ? 'current' : ''"
+								@click="catetory = index, tag_id = item.tag">
+								{{ item.nav_name }}</view>
+						</view>
+						<up-icon name="arrow-right" color="#6B6B6B" size="20" @click="catetoryUp"
+							v-if="tagspages !== tagNum"></up-icon>
+					</swiper-item>
+				</swiper>
+			</view>
+		</view>
+		<view style="height:300rpx" v-if="current == 1"></view>
+		<view style="height:150rpx" v-else></view>
+		<!-- 轮播 -->
+		<view class="swiper-wrapper" v-if="current == 0">
+			<swiper indicator-dots autoplay circular class="swiper" indicator-active-color="#fff"
+				indicator-color="rgba(255, 255, 255, .4)">
+				<swiper-item v-for="(item, index) in 3" :key="index" class="swiper-item">
+					<image src="/static/swiper.png" />
 				</swiper-item>
 			</swiper>
+			<view class="content">
+				<view class="t1">WallpaperCicada</view>
+				<view class="search search1">
+					<image src="/static/search2.png" mode="widthFix" @click="search" />
+					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search"
+						placeholder-style="color:#fff">
+					<view class="type">
+						<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'" :options="cateList"
+							@select="selectItem"></up-select>
+					</view>
+				</view>
+				<view class="catetory-swiper-wrapper">
+
+					<swiper class="catetory-swiper" @change="changeCatetory">
+						<swiper-item class="catetory-swiper-item" v-for="item in tagNum" :key="item">
+							<up-icon name="arrow-left" color="#fff" size="20" @click="catetoryDown"
+								v-if="tagspages > 1"></up-icon>
+							<view class="sign" v-for="(item, index) in tagList" :key="index">
+								<view :class="catetory == index ? 'current' : ''"
+									@click="catetory = index, tag_id = item.tag">
+									{{ item.nav_name }}</view>
+							</view>
+							<up-icon name="arrow-right" color="#fff" size="20" @click="catetoryUp"
+								v-if="tagspages !== tagNum"></up-icon>
+						</swiper-item>
+					</swiper>
+				</view>
+			</view>
 		</view>
+		
 		<!-- 内容 -->
 		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }"></images>
 	</view>
@@ -54,11 +91,8 @@
 
 <script setup>
 import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
-import {
-	onReachBottom
-} from '@dcloudio/uni-app'
+import { onReachBottom } from '@dcloudio/uni-app'
 import { ref, onMounted, watch } from 'vue'
-const shebeiType = ['电脑壁纸', '手机壁纸']
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -81,6 +115,7 @@ const cateList = ref([
 		name: '动态'
 	}
 ])
+const shebeiType = [{ id: 0, name: '电脑壁纸' }, { id: 1, name: '手机壁纸' }]
 //初始化数据
 const init = () => {
 	pages.value = 1
@@ -180,6 +215,34 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	font-size: 28rpx;
 }
 
+.search {
+	width: 40vw;
+	height: 70rpx;
+	border-radius: 60rpx;
+	background: rgba(216, 216, 216, 0.35);
+	display: flex;
+	align-items: center;
+	margin-left: 100rpx;
+
+	input {
+		text-indent: 25rpx;
+		font-size: 26rpx;
+		width: 88%;
+		// background: pink;
+	}
+
+	image {
+		width: 40rpx;
+		margin-left: 20rpx;
+	}
+}
+.fixed{
+		position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	z-index: 999;
+}
 .top {
 	display: flex;
 	align-items: center;
@@ -188,29 +251,21 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	box-sizing: border-box;
 	padding: 30rpx 80rpx;
 	height: 150rpx;
-	border-bottom: 1rpx solid #E9E6E6;
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	z-index: 999;
+	
+
 
 	.topLeft {
 		display: flex;
 		align-items: center;
 
 		.logo {
-			width: 200rpx;
+			width: 250rpx;
 			vertical-align: middle;
 		}
 
 		.type {
 			display: flex;
 			align-items: center;
-			margin: 0 50rpx;
-			padding: 8rpx 20rpx;
-			border: 1rpx solid #6B6B6B;
-			border-radius: 40rpx;
 
 			text {
 				display: block;
@@ -238,24 +293,7 @@ watch(() => [current.value, media_live.value, tag_id.value],
 			}
 		}
 
-		.search {
-			width: 550rpx;
-			height: 70rpx;
-			border-radius: 60rpx;
-			border: 1rpx solid #ACACAC;
-			display: flex;
-			align-items: center;
 
-			input {
-				text-indent: 25rpx;
-				font-size: 26rpx;
-				width: 90%;
-			}
-
-			image {
-				width: 40rpx;
-			}
-		}
 	}
 
 	.topRight {
@@ -263,42 +301,110 @@ watch(() => [current.value, media_live.value, tag_id.value],
 		align-items: center;
 
 		.btn {
-			margin-left: 50rpx;
-			background: #000;
+			// margin-left: 50rpx;
+			background: #F8A705;
 			color: #fff;
 			font-size: 26rpx;
 			display: flex;
 			align-items: center;
-			padding: 10rpx 15rpx;
+			padding: 10rpx 20rpx;
 			border-radius: 40rpx;
 
 			image {
 				width: 30rpx;
+				margin-top: 7rpx;
+			}
+		}
+
+		.tiaokuan {
+			margin: 0 30rpx;
+		}
+	}
+}
+
+//轮播
+.swiper-wrapper {
+	margin: 0 80rpx;
+	position: relative;
+
+	.swiper {
+		height: 450rpx;
+		width: 100%;
+	}
+
+	.swiper-item {
+		width: 100%;
+		height: 100%;
+
+		image {
+			width: 100%;
+			height: 100%;
+			border-radius: 20rpx;
+		}
+	}
+
+	.content {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 450rpx;
+		width: 100%;
+		z-index: 11;
+		color: #fff;
+
+		.search1 {
+			background: rgba(255, 255, 255, 0.4);
+			margin: 40rpx 0;
+		}
+
+		.t1 {
+			font-weight: bold;
+			font-size: 70rpx;
+
+		}
+
+		.catetory-swiper-wrapper {
+			width: 40vw;
+
+			.catetory-swiper {
+				width: 100%;
+				height: 100rpx;
+				overflow-x: scroll;
+
+				.catetory-swiper-item {
+					display: flex;
+					align-items: center;
+					overflow-x: scroll;
+
+					.sign {
+						view {
+							margin-right: 20rpx;
+							padding: 10rpx 30rpx;
+							text-align: center;
+							border-radius: 40rpx;
+							background: rgba(255, 255, 255, 0.4);
+						}
+					}
+
+					.current {
+						background: #fff !important;
+						color: #000;
+					}
+				}
 			}
 		}
 	}
 }
 
-.title {
-	width: 100%;
-	margin: 40rpx 0;
-	margin-bottom: 20rpx;
-	text-align: center;
-	font-size: 26rpx;
-
-	.t1 {
-		color: #000;
-		font-family: Source Han Sans;
-		font-weight: bolder;
-		font-size: 60rpx;
-		margin-bottom: 20rpx;
-
-	}
-}
-
 .catetory {
 	margin: 0 80rpx;
-	margin-top: 20rpx;
+	padding-top: 20rpx;
+	height: 100rpx;
+	background: #fff;
 
 	.swiper {
 		width: 100%;
@@ -326,5 +432,13 @@ watch(() => [current.value, media_live.value, tag_id.value],
 			color: #fff;
 		}
 	}
+}
+</style>
+<style>
+.uni-swiper-dot-active,
+.uni-swiper-dot {
+	width: 60rpx !important;
+	height: 10rpx !important;
+	border-radius: 10rpx !important;
 }
 </style>
