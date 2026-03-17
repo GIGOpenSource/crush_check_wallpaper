@@ -66,24 +66,29 @@
 					</view>
 				</view>
 				<view class="catetory-swiper-wrapper">
+					<up-icon name="arrow-left" color="#fff" size="20" @click="catetoryDown"
+						v-if="tagspages > 1"></up-icon>
+					<view class="tabs">
+						<up-tabs :list="tagList" lineWidth="0" lineColor="#f56c6c" :activeStyle="{
+							color: '#000',
+							background: '#fff',
+							padding: '10rpx 30rpx',
+							borderRadius: '40rpx'
+						}" :inactiveStyle="{
+							color: '#fff',
+							background: 'rgba(255, 255, 255, 0.4)',
+							padding: '10rpx 30rpx',
+							borderRadius: '40rpx'
+						}" :scrollable="true" @change="chooseCate">
+						</up-tabs>
 
-					<swiper class="catetory-swiper" @change="changeCatetory">
-						<swiper-item class="catetory-swiper-item" v-for="item in tagNum" :key="item">
-							<up-icon name="arrow-left" color="#fff" size="20" @click="catetoryDown"
-								v-if="tagspages > 1"></up-icon>
-							<view class="sign" v-for="(item, index) in tagList" :key="index">
-								<view :class="catetory == index ? 'current' : ''"
-									@click="catetory = index, tag_id = item.tag">
-									{{ item.nav_name }}</view>
-							</view>
-							<up-icon name="arrow-right" color="#fff" size="20" @click="catetoryUp"
-								v-if="tagspages !== tagNum"></up-icon>
-						</swiper-item>
-					</swiper>
+					</view>
+					<up-icon name="arrow-right" color="#fff" size="20" @click="catetoryUp"
+						v-if="tagspages !== tagNum"></up-icon>
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 内容 -->
 		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }"></images>
 	</view>
@@ -155,10 +160,14 @@ const getTags = () => {
 		pageSize: 10
 	}
 	getWallpapersTags(params).then(res => {
-		tagList.value = res.data.results
+		tagList.value = res.data.results.map(item => {
+			return {
+				...item,
+				name: item.nav_name
+			}
+		})
 		tagNum.value = res.data.pagination.total_pages
 		tag_id.value = res.data.results[0].tag
-		console.log(tagList.value, 'tagList.value')
 		init()
 	})
 
@@ -190,6 +199,11 @@ const changeCatetory = (e) => {
 	tagspages.value = e.detail.current + 1
 	getTags()
 
+}
+//选择分类
+const chooseCate = (e) => {
+ catetory.value = e.index
+ tag_id.value = e.tag
 }
 //导航刷新
 onReachBottom(() => {
@@ -236,13 +250,15 @@ watch(() => [current.value, media_live.value, tag_id.value],
 		margin-left: 20rpx;
 	}
 }
-.fixed{
-		position: fixed;
+
+.fixed {
+	position: fixed;
 	left: 0;
 	top: 0;
 	width: 100%;
 	z-index: 999;
 }
+
 .top {
 	display: flex;
 	align-items: center;
@@ -251,7 +267,7 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	box-sizing: border-box;
 	padding: 30rpx 80rpx;
 	height: 150rpx;
-	
+
 
 
 	.topLeft {
@@ -369,33 +385,15 @@ watch(() => [current.value, media_live.value, tag_id.value],
 
 		.catetory-swiper-wrapper {
 			width: 40vw;
+			display: flex;
+			align-items: center;
+			height: 80rpx;
 
-			.catetory-swiper {
-				width: 100%;
-				height: 100rpx;
-				overflow-x: scroll;
-
-				.catetory-swiper-item {
-					display: flex;
-					align-items: center;
-					overflow-x: scroll;
-
-					.sign {
-						view {
-							margin-right: 20rpx;
-							padding: 10rpx 30rpx;
-							text-align: center;
-							border-radius: 40rpx;
-							background: rgba(255, 255, 255, 0.4);
-						}
-					}
-
-					.current {
-						background: #fff !important;
-						color: #000;
-					}
-				}
+			.tabs {
+				width: 95%;
+				margin-right: 4%;
 			}
+
 		}
 	}
 }
