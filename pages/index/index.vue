@@ -6,8 +6,10 @@
 				<view class="topLeft">
 					<image src="/static/logo.png" class="logo" mode="widthFix" />
 					<view class="search" v-if="current">
-						<image src="/static/search.png" mode="widthFix" @click="search" />
+						<view class="searchleft">
+						  <image src="/static/search.png" mode="widthFix" @click="search" />
 						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
+						</view>
 						<view class="type">
 							<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'"
 								:options="cateList" @select="selectItem"></up-select>
@@ -18,7 +20,7 @@
 				<view class="topRight">
 					<view>
 						<up-select v-model:current="current" :label="current == 0 ? '电脑壁纸' : '手机壁纸'"
-							:options="shebeiType" @select="current = item.id"></up-select>
+							:options="shebeiType" @select="choosetype"></up-select>
 					</view>
 					<text class="tiaokuan">条款</text>
 					<view class="btn" @click="uni.navigateTo({ url: '/pages/index/down' })">
@@ -27,21 +29,26 @@
 					</view>
 				</view>
 			</view>
-			<!-- 手机分类 -->
 			<view class="catetory" v-if="current == 1">
-				<swiper class="swiper" @change="changeCatetory">
-					<swiper-item class="swiper-item" v-for="item in tagNum" :key="item">
-						<up-icon name="arrow-left" color="#6B6B6B" size="20" @click="catetoryDown"
-							v-if="tagspages > 1"></up-icon>
-						<view class="sign" v-for="(item, index) in tagList" :key="index">
-							<view :class="catetory == index ? 'current' : ''"
-								@click="catetory = index, tag_id = item.tag">
-								{{ item.nav_name }}</view>
-						</view>
-						<up-icon name="arrow-right" color="#6B6B6B" size="20" @click="catetoryUp"
-							v-if="tagspages !== tagNum"></up-icon>
-					</swiper-item>
-				</swiper>
+				<up-icon name="arrow-left" color="#000" size="20" @click="catetoryDown" v-if="tagspages > 1"></up-icon>
+				<view class="tabs">
+					<up-tabs :list="tagList" lineWidth="0" lineColor="#f56c6c" :activeStyle="{
+						color: '#fff',
+						background: '#000',
+						padding: '10rpx 30rpx',
+						borderRadius: '40rpx',
+						marginRight: '200rpx'
+					}" :inactiveStyle="{
+						color: '#000',
+						padding: '10rpx 30rpx',
+						borderRadius: '40rpx',
+						marginRight: '200rpx'
+					}"  :scrollable="true"  @change="chooseCate">
+					</up-tabs>
+
+				</view>
+				<up-icon name="arrow-right" color="#000" size="20" @click="catetoryUp"
+					v-if="tagspages !== tagNum"></up-icon>
 			</view>
 		</view>
 		<view style="height:300rpx" v-if="current == 1"></view>
@@ -57,9 +64,11 @@
 			<view class="content">
 				<view class="t1">WallpaperCicada</view>
 				<view class="search search1">
-					<image src="/static/search2.png" mode="widthFix" @click="search" />
+				    <view class="searchleft">
+					  	<image src="/static/search2.png" mode="widthFix" @click="search" />
 					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search"
 						placeholder-style="color:#fff">
+					</view>
 					<view class="type">
 						<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'" :options="cateList"
 							@select="selectItem"></up-select>
@@ -79,7 +88,7 @@
 							background: 'rgba(255, 255, 255, 0.4)',
 							padding: '10rpx 30rpx',
 							borderRadius: '40rpx'
-						}" :scrollable="true" @change="chooseCate">
+						}" :scrollable="true"  @change="chooseCate">
 						</up-tabs>
 
 					</view>
@@ -88,16 +97,16 @@
 				</view>
 			</view>
 		</view>
-
 		<!-- 内容 -->
 		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }"></images>
+		
 	</view>
 </template>
 
 <script setup>
 import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
-import { onReachBottom } from '@dcloudio/uni-app'
-import { ref, onMounted, watch } from 'vue'
+ import { onReachBottom } from '@dcloudio/uni-app'
+ import { ref, onMounted, watch } from 'vue'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -202,8 +211,12 @@ const changeCatetory = (e) => {
 }
 //选择分类
 const chooseCate = (e) => {
- catetory.value = e.index
- tag_id.value = e.tag
+	catetory.value = e.index
+	tag_id.value = e.tag
+}
+
+const choosetype = (e) => {
+	current.value = e.id
 }
 //导航刷新
 onReachBottom(() => {
@@ -237,17 +250,23 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	display: flex;
 	align-items: center;
 	margin-left: 100rpx;
+	justify-content: space-between;
+	padding: 0 30rpx;
+	box-sizing: border-box;
+	.searchleft{
+		display: flex;
+		align-items: center;
+	}
 
 	input {
 		text-indent: 25rpx;
 		font-size: 26rpx;
-		width: 88%;
-		// background: pink;
+		width: 80%;
 	}
 
 	image {
 		width: 40rpx;
-		margin-left: 20rpx;
+		// margin-left: 20rpx;
 	}
 }
 
@@ -399,41 +418,21 @@ watch(() => [current.value, media_live.value, tag_id.value],
 }
 
 .catetory {
-	margin: 0 80rpx;
-	padding-top: 20rpx;
-	height: 100rpx;
-	background: #fff;
+	display: flex;
+	align-items: center;
+	padding-bottom: 20rpx;
+	margin:0 80rpx;
 
-	.swiper {
-		width: 100%;
-		height: 80rpx;
-	}
+	.tabs {
+		width: 95%;
+		// background: red;
+		margin-right: 4%;
 
-	.swiper-item {
-		width: 100%;
-		display: flex;
-		align-items: center;
-
-		.sign {
-			width: 10%;
-
-			view {
-				width: 60%;
-				padding: 10rpx 0;
-				text-align: center;
-				border-radius: 40rpx;
-			}
-		}
-
-		.current {
-			background: #000;
-			color: #fff;
-		}
 	}
 }
 </style>
 <style>
-.uni-swiper-dot-active,
+.swiper-wrapper .swiper .swiper-item .uni-swiper-dot-active,
 .uni-swiper-dot {
 	width: 60rpx !important;
 	height: 10rpx !important;

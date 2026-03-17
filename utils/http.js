@@ -21,7 +21,7 @@ let httpConfig = {
 	timer: null, // 定时器
 	loadingMask: false, // 展示loading的时候，是否给一个透明的蒙层，防止触摸穿透
 	stopRepeat: false, // 是否阻止重复请求
-	timeout: 15000, // 请求超时时间
+	timeout: 1500000, // 请求超时时间
 	errorOutput: true // 请求失败输出信息
 }
 
