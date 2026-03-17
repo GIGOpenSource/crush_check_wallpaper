@@ -432,8 +432,7 @@ watch(() => [current.value, media_live.value, tag_id.value],
 }
 </style>
 <style>
-.swiper-wrapper .swiper .swiper-item .uni-swiper-dot-active,
-.uni-swiper-dot {
+.swiper-wrapper .swiper  .uni-swiper-wrapper .uni-swiper-dots .uni-swiper-dot{
 	width: 60rpx !important;
 	height: 10rpx !important;
 	border-radius: 10rpx !important;
