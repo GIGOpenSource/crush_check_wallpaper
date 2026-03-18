@@ -110,7 +110,7 @@ import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
  import {
    onPageScroll
 } from '@dcloudio/uni-app'
-import { umengclick } from '@/utils/umeng.js'
+import { umengclick,umengstay } from '@/utils/umeng.js'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -253,6 +253,7 @@ onReachBottom(() => {
 onMounted(() => {
 
 	getTags()
+	umengstay('page_stay')
 })
 
 watch(() => [current.value, media_live.value, tag_id.value],

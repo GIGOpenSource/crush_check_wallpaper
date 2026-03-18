@@ -25,7 +25,7 @@
 <script setup>
 import QRCode from '@/utils/qrcode.js'
 import { ref,onMounted,nextTick } from 'vue'
-import { umengclick } from '@/utils/umeng.js'
+import { umengclick,umengstay } from '@/utils/umeng.js'
 const qrCodeUrl = ref('')
 const canvasWidth = ref(300)
 const canvasHeight = ref(300)
@@ -104,7 +104,7 @@ const back = () => {
     umengclick('download_back')
 }
 onMounted(() => {
-     console.log(111)
+     umengstay('page_stay')
     generateQRCode('ios')
 })
 </script>
