@@ -25,7 +25,8 @@
 <script setup>
 import QRCode from '@/utils/qrcode.js'
 import { ref,onMounted,nextTick } from 'vue'
-import { umengclick,umengstay } from '@/utils/umeng.js'
+import { umengclick} from '@/utils/umeng.js'
+import { usePageStay } from '@/utils/usePageStay.js'
 const qrCodeUrl = ref('')
 const canvasWidth = ref(300)
 const canvasHeight = ref(300)
@@ -34,6 +35,7 @@ const downloadLinks = ref({
     apk: 'https://www.crashcheck.net/apk/app.apk',
     google: 'https://open.weixin.qq.com/'
 })
+usePageStay()
 const generateQRCode = (type) => {
     // 根据点击的按钮类型，获取对应的链接
   let qrText = '';
@@ -104,7 +106,6 @@ const back = () => {
     umengclick('download_back')
 }
 onMounted(() => {
-     umengstay('page_stay')
     generateQRCode('ios')
 })
 </script>

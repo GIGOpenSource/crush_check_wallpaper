@@ -44,7 +44,8 @@ import { getWallpapersList, guessLike } from '@/api/index.js'
 import {
   onLoad
 } from '@dcloudio/uni-app'
-import { umengclick,umengstay } from '@/utils/umeng.js'
+import { umengclick } from '@/utils/umeng.js'
+import { usePageStay } from '@/utils/usePageStay.js'
 const share = ref(false)
 const details = ref({})
 const data = ref({})
@@ -75,8 +76,8 @@ const imageslist = [
   }
 ]
 const copyurl = ref('')
+ usePageStay()
 onLoad((e) => {
- umengstay('page_stay')
   if (e.params) {
     let params = JSON.parse(decodeURIComponent(e.params))
     data.value = params

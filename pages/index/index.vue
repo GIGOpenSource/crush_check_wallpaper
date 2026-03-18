@@ -107,10 +107,11 @@
 import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
  import { onReachBottom } from '@dcloudio/uni-app'
  import { ref, onMounted, watch } from 'vue'
+ import { usePageStay } from '@/utils/usePageStay.js'
  import {
    onPageScroll
 } from '@dcloudio/uni-app'
-import { umengclick,umengstay } from '@/utils/umeng.js'
+import { umengclick} from '@/utils/umeng.js'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -138,6 +139,7 @@ const shebeiType = [{ id: 0, name: '电脑壁纸' }, { id: 1, name: '手机壁�
 const chooseCurrent = ref(0)
 
 const flag = ref(false)
+usePageStay()
 //初始化数据
 const init = () => {
 	pages.value = 1
@@ -251,9 +253,7 @@ onReachBottom(() => {
 	getlist()
 })
 onMounted(() => {
-
 	getTags()
-	umengstay('page_stay')
 })
 
 watch(() => [current.value, media_live.value, tag_id.value],
