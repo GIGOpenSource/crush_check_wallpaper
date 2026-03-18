@@ -56,7 +56,7 @@
 		<!-- 轮播 -->
 		<view class="swiper-wrapper" v-if="current == 0">
 			<swiper indicator-dots autoplay circular class="swiper" indicator-active-color="#fff"
-				indicator-color="rgba(255, 255, 255, .4)" indicator-mode="dot">
+				indicator-color="rgba(255, 255, 255, .4)">
 				<swiper-item v-for="(item, index) in 3" :key="index" class="swiper-item">
 					<image src="/static/swiper.png" />
 				</swiper-item>
@@ -422,10 +422,10 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	}
 }
 </style>
-<style>
-.swiper-wrapper .swiper  .uni-swiper-wrapper .uni-swiper-dots .uni-swiper-dot{
-	width: 60rpx !important;
-	height: 10rpx !important;
-	border-radius: 10rpx !important;
+<style scoped>
+:deep(.uni-swiper-dot) {
+  width: 60rpx;
+  height: 10rpx;
+  border-radius: 10rpx;
 }
 </style>
