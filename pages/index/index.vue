@@ -261,7 +261,7 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	input {
 		text-indent: 25rpx;
 		font-size: 26rpx;
-		width: 80%;
+		width: 30vw;
 	}
 
 	image {

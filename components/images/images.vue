@@ -11,7 +11,14 @@
 				</view>
 			</view>
 		</view>
+		
 	</view>
+	<view v-if="info.length == 0" class="no-data">
+			<view>
+				<image src="/static/no-empt.png" mode="widthFix" />
+			</view>
+			<view class="t1">未找到相关搜索壁纸</view>
+		</view>
 </template>
 
 <script setup>
@@ -164,5 +171,23 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 		width: 100%;
 
 	}
+
+	
 }
+.no-data {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-top: 10vh;
+		image {
+			width: 300rpx;
+		}
+		.t1{
+			margin-top: 40rpx;
+			color: #3D3D3D;
+			font-weight: 500;
+		}
+	}
 </style>
