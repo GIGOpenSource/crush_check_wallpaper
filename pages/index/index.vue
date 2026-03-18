@@ -56,7 +56,7 @@
 		<!-- 轮播 -->
 		<view class="swiper-wrapper" v-if="current == 0">
 			<swiper indicator-dots autoplay circular class="swiper" indicator-active-color="#fff"
-				indicator-color="rgba(255, 255, 255, .4)">
+				indicator-color="rgba(255, 255, 255, .4)" indicator-mode="dot">
 				<swiper-item v-for="(item, index) in 3" :key="index" class="swiper-item">
 					<image src="/static/swiper.png" />
 				</swiper-item>
