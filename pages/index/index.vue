@@ -294,19 +294,9 @@ watch(() => [current.value, media_live.value, tag_id.value],
 		align-items: center;
 
 		.logo {
+			// width: 7vw;
 			width: 250rpx;
 			vertical-align: middle;
-		}
-
-		.type {
-			display: flex;
-			align-items: center;
-
-			text {
-				display: block;
-				margin-top: -5rpx;
-				margin-right: 5rpx;
-			}
 		}
 
 		.shebei {
@@ -342,17 +332,17 @@ watch(() => [current.value, media_live.value, tag_id.value],
 			font-size: 26rpx;
 			display: flex;
 			align-items: center;
-			padding: 10rpx 20rpx;
-			border-radius: 40rpx;
+			padding: 0.6vh 0.5vw;
+			border-radius:40rpx;
 
 			image {
 				width: 30rpx;
-				margin-top: 7rpx;
+				margin-top:0.2vw;
 			}
 		}
 
 		.tiaokuan {
-			margin: 0 30rpx;
+			margin: 0 0.7vw;
 		}
 	}
 }
@@ -422,6 +412,7 @@ watch(() => [current.value, media_live.value, tag_id.value],
 	align-items: center;
 	padding-bottom: 20rpx;
 	margin:0 80rpx;
+	background: #fff;
 
 	.tabs {
 		width: 95%;

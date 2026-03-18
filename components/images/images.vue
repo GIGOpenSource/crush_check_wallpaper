@@ -34,11 +34,11 @@ const details = (index, item) => {
 	//              action: 'aplus.record',
 	//               arguments: ['ceshi', 'CLK']
 	//             });
-	aplus_queue.push({
-		 action: 'aplus.record',
-		 arguments: ['ceshi', 'CLK']
-	})
-	return
+	// aplus_queue.push({
+	// 	 action: 'aplus.record',
+	// 	 arguments: ['ceshi', 'CLK']
+	// })
+	// return
 	if (props.dataItem.tag_id) {
 		let params = {
 			...props.dataItem,
@@ -150,7 +150,9 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 			.right {
 				display: flex;
 				background: rgba(236, 229, 229, 0.25);
-				padding: 5rpx 20rpx;
+				padding: 0.2vh 0.6vw;
+				// width: 3vw;
+				// height: 3vh;
 				border-radius: 40rpx;
 				border: 1rpx solid #fff;
 				font-size: 24rpx;
