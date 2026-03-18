@@ -5,7 +5,7 @@
 			<view class="top">
 				<view class="topLeft">
 					<image src="/static/logo.png" class="logo" mode="widthFix" />
-					<view class="search" v-if="current">
+					<view class="search" v-if="flag">
 						<view class="searchleft">
 						  <image src="/static/search.png" mode="widthFix" @click="search" />
 						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
@@ -29,7 +29,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="catetory" v-if="current == 1">
+			<view class="catetory" v-if="flag">
 				<up-icon name="arrow-left" color="#000" size="20" @click="catetoryDown" v-if="tagspages > 1"></up-icon>
 				<view class="tabs">
 					<up-tabs :list="tagList" lineWidth="0" lineColor="#f56c6c" :activeStyle="{
@@ -43,7 +43,7 @@
 						padding: '10rpx 30rpx',
 						borderRadius: '40rpx',
 						marginRight: '200rpx'
-					}"  :scrollable="true"  @change="chooseCate">
+					}"  :scrollable="true"  :current="chooseCurrent" @change="chooseCate">
 					</up-tabs>
 
 				</view>
@@ -51,10 +51,10 @@
 					v-if="tagspages !== tagNum"></up-icon>
 			</view>
 		</view>
-		<view style="height:300rpx" v-if="current == 1"></view>
+		<view style="height:300rpx" v-if="flag"></view>
 		<view style="height:150rpx" v-else></view>
 		<!-- 轮播 -->
-		<view class="swiper-wrapper" v-if="current == 0">
+		<view class="swiper-wrapper">
 			<swiper indicator-dots autoplay circular class="swiper" indicator-active-color="#fff"
 				indicator-color="rgba(255, 255, 255, .4)">
 				<swiper-item v-for="(item, index) in 3" :key="index" class="swiper-item">
@@ -88,7 +88,7 @@
 							background: 'rgba(255, 255, 255, 0.4)',
 							padding: '10rpx 30rpx',
 							borderRadius: '40rpx'
-						}" :scrollable="true"  @change="chooseCate">
+						}" :scrollable="true"  :current="chooseCurrent" @change="chooseCate">
 						</up-tabs>
 
 					</view>
@@ -107,6 +107,9 @@
 import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
  import { onReachBottom } from '@dcloudio/uni-app'
  import { ref, onMounted, watch } from 'vue'
+ import {
+   onPageScroll
+} from '@dcloudio/uni-app'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -130,6 +133,10 @@ const cateList = ref([
 	}
 ])
 const shebeiType = [{ id: 0, name: '电脑壁纸' }, { id: 1, name: '手机壁纸' }]
+
+const chooseCurrent = ref(0)
+
+const flag = ref(false)
 //初始化数据
 const init = () => {
 	pages.value = 1
@@ -190,6 +197,7 @@ const catetoryUp = () => {
 	catetory.value = 0
 	tagList.value = []
 	tagspages.value++
+	chooseCurrent.value = 0
 	getTags()
 
 }
@@ -199,6 +207,7 @@ const catetoryDown = () => {
 	catetory.value = 0
 	tagList.value = []
 	tagspages.value--
+	catetoryDown.value = 0
 	getTags()
 }
 //滑动
@@ -213,11 +222,21 @@ const changeCatetory = (e) => {
 const chooseCate = (e) => {
 	catetory.value = e.index
 	tag_id.value = e.tag
+	chooseCurrent.value = e.index
 }
 
 const choosetype = (e) => {
 	current.value = e.id
 }
+
+//页面滚动
+ onPageScroll((e) => {
+	if(e.scrollTop > 200){
+		flag.value = true
+	}else{
+		flag.value = false
+	}
+ })
 //导航刷新
 onReachBottom(() => {
 	if (pages.value == totalPages.value) return
