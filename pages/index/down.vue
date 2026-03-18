@@ -24,7 +24,7 @@
 
 <script setup>
 const back = () => {
-    uni.reLaunch({ url: '/pages/index/index' })
+    uni.navigateBack()
 }
 </script>
 
@@ -88,7 +88,7 @@ const back = () => {
 
         .logo {
             width: 500rpx;
-			height: 400rpx;
+			height: 500rpx;
         }
     }
 
