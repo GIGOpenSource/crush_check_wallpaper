@@ -1,4 +1,5 @@
 import { onShow, onHide } from '@dcloudio/uni-app'
+  const { aplus_queue } = window;
 export function usePageStay(options = {}) {
   let startTime = null
   let pageStayTimer = null
@@ -12,7 +13,11 @@ function formatDateTime(timestamp = Date.now()) {
     const second = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
-
+function getCurrentPagePurePath() {
+    const pages = getCurrentPages();
+    if (pages.length === 0) return '/pages/index/index'; 
+    return pages[pages.length - 1].route || '/pages/index/index';
+}
   const trackPageStay = (stayDuration) => {
     try {
       const params = {
@@ -24,7 +29,7 @@ function formatDateTime(timestamp = Date.now()) {
         region: uni.getSystemInfoSync().language,
         stayDuration: stayDuration // 停留时长（秒）
       }
-      const { aplus_queue } = window;
+    
       aplus_queue.push({
         action: 'aplus.record',
         arguments: ['page_stay', 'CLK', params]

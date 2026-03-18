@@ -1,4 +1,4 @@
-const { aplus_queue } = window;
+
 function formatDateTime(timestamp = Date.now()) {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -28,6 +28,7 @@ const getparams = () => {
 }
 //点击
 const umengclick = (name) => {
+    const { aplus_queue } = window;
     let params = getparams()
     aplus_queue.push({
         action: 'aplus.record',
