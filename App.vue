@@ -1,13 +1,17 @@
 <script>
+import { umengclick } from '@/utils/umeng.js'
 export default {
 	onLaunch: function () {
 		console.log('App Launch')
+		umengclick('page_launch')
 	},
 	onShow: function () {
 		console.log('App Show')
+		umengclick('page_show')
 	},
 	onHide: function () {
 		console.log('App Hide')
+		umengclick('page_hide')
 	},
 	beforeCreate: function () {
 		(function (w, d, s, q, i) {

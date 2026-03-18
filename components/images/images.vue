@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
+import { umengclick } from '@/utils/umeng.js'
 import { ref } from 'vue'
-const { aplus_queue } = window;
-
 const props = defineProps({
 	info: {
 		type: Array,
@@ -37,15 +36,6 @@ const props = defineProps({
 })
 const details = (index, item) => {
 	console.log(111)
-	//  aplus_queue.push({
-	//              action: 'aplus.record',
-	//               arguments: ['ceshi', 'CLK']
-	//             });
-	// aplus_queue.push({
-	// 	 action: 'aplus.record',
-	// 	 arguments: ['ceshi', 'CLK']
-	// })
-	// return
 	if (props.dataItem.tag_id) {
 		let params = {
 			...props.dataItem,
@@ -60,15 +50,18 @@ const details = (index, item) => {
 			url: `/pages/index/details?like=${encodeURIComponent(JSON.stringify(item))}`
 		});
 	}
+	umengclick('wallpaper_click')
 
 }
 const handleMouseOver = (index) => {
+	umengclick('wallpaper_hover')
 	props.info[index].show = true
 }
 const handleMouseOut = (index) => {
 	props.info[index].show = false
 }
 const downloadImage = (url, name) => {
+	umengclick('wallpaper_hover_download_click')
 	downloadImageH5(url, name);
 }
 const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
@@ -107,12 +100,14 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 				// 6. 释放资源
 				URL.revokeObjectURL(url);
 				document.body.removeChild(a);
+				umengclick('download_success')
 				resolve('下载成功');
 			}, 'image/png'); // 默认为 png 格式，可根据需要修改
 		};
 
 		// 图片加载失败
 		image.onerror = (err) => {
+			 umengclick('download_fail')
 			reject(`下载失败：${err.message}，可能是图片跨域限制或地址错误`);
 		};
 	});

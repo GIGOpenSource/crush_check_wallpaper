@@ -8,7 +8,7 @@
 					<view class="search" v-if="flag">
 						<view class="searchleft">
 						  <image src="/static/search.png" mode="widthFix" @click="search" />
-						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search">
+						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search" @input="umengclick('search_input')">
 						</view>
 						<view class="type">
 							<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'"
@@ -22,8 +22,8 @@
 						<up-select v-model:current="current" :label="current == 0 ? '电脑壁纸' : '手机壁纸'"
 							:options="shebeiType" @select="choosetype"></up-select>
 					</view>
-					<text class="tiaokuan">条款</text>
-					<view class="btn" @click="uni.navigateTo({ url: '/pages/index/down' })">
+					<text class="tiaokuan" @click="umengclick('click_term')">条款</text>
+					<view class="btn" @click="uni.navigateTo({ url: '/pages/index/down' }),umengclick('click_download_mobile')">
 						<image src="/static/down.png" mode="widthFix" />
 						<text>下载移动端</text>
 					</view>
@@ -66,7 +66,7 @@
 				<view class="search search1">
 				    <view class="searchleft">
 					  	<image src="/static/search2.png" mode="widthFix" @click="search" />
-					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search"
+					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search" @input="umengclick('search_input')"
 						placeholder-style="color:#fff">
 					</view>
 					<view class="type">
@@ -110,6 +110,7 @@ import { getWallpapersList, getWallpapersTags } from '@/api/index.js'
  import {
    onPageScroll
 } from '@dcloudio/uni-app'
+import { umengclick } from '@/utils/umeng.js'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
@@ -145,8 +146,8 @@ const init = () => {
 }
 // 选择 
 const selectItem = (item) => {
-	console.log(item);
 	media_live.value = item.id
+	umengclick('filter_click_type')
 };
 //获取壁纸列表
 const getlist = () => {
@@ -189,6 +190,10 @@ const getTags = () => {
 
 }
 const search = () => {
+	umengclick('search_click')
+	if(!name.value){
+		umengclick('search_empty')
+	}
 	init()
 }
 //分类下一页
@@ -223,10 +228,12 @@ const chooseCate = (e) => {
 	catetory.value = e.index
 	tag_id.value = e.tag
 	chooseCurrent.value = e.index
+	umengclick('filter_click_tag')
 }
 
 const choosetype = (e) => {
 	current.value = e.id
+	umengclick('filter_click_device')
 }
 
 //页面滚动

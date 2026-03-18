@@ -14,7 +14,7 @@
           <image src="/static/down2.png" mode="widthFix" />
           <text>下载</text>
         </view>
-        <view @click="share = true">
+        <view @click="share = true,umengclick('detail_share_click')">
           <image src="/static/share.png" mode="widthFix" />
           <text>分享</text>
         </view>
@@ -44,6 +44,7 @@ import { getWallpapersList, guessLike } from '@/api/index.js'
 import {
   onLoad
 } from '@dcloudio/uni-app'
+import { umengclick } from '@/utils/umeng.js'
 const share = ref(false)
 const details = ref({})
 const data = ref({})
@@ -108,6 +109,7 @@ const getlike = () => {
 }
 //上一个
 const back = () => {
+ 
   if (data.value.currentPage == 1) {
     data.value.currentPage = total.value
   } else {
@@ -117,6 +119,7 @@ const back = () => {
 }
 //下一个
 const up = () => {
+   umengclick('detail_swipe_right')
   if (data.value.currentPage == total.value) {
     data.value.currentPage = 1
   } else {
@@ -125,9 +128,11 @@ const up = () => {
   getdetails()
 }
 const downloadImage = (url,name) => {
+  umengclick('detail_download_click')
     downloadImageH5(url, name);
 }
 const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
+   umengclick('download_start')
   return new Promise((resolve, reject) => {
     // 1. 处理本地图片路径（UniApp 本地路径转绝对路径）
     if (imgUrl.startsWith('uni://') || imgUrl.startsWith('/')) {
@@ -163,12 +168,14 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
         // 6. 释放资源
         URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        umengclick('download_success')
         resolve('下载成功');
       }, 'image/png'); // 默认为 png 格式，可根据需要修改
     };
 
     // 图片加载失败
     image.onerror = (err) => {
+      umengclick('download_fail')
       reject(`下载失败：${err.message}，可能是图片跨域限制或地址错误`);
     };
   });
@@ -176,6 +183,7 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 
 //复制
 const copy = () => {
+  umengclick('copy_link_click')
     uni.setClipboardData({
         data: copyurl.value, 
         success: () => {
@@ -193,23 +201,28 @@ const share2 = (type) => {
   shareConfig.value.image = details.value.url
   console.log(shareConfig.value, 'shareConfig.value')
   if (type == 'twitter') {
+    umengclick('share_to_x')
     const { url, title } = shareConfig.value
     const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
     window.open(twitterUrl, '_blank');
   } else if (type == 'facebook') {
+    umengclick('share_to_facebook')
     const { url, title } = shareConfig.value
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     window.open(facebookUrl, '_blank');
   } else if (type == 'whatsApp') {
+    umengclick('share_to_whatsapp')
     const { url, title } = shareConfig.value
     const text = `${title}\n${url}`;
     const link = `https://web.whatsapp.com/send?text=${encodeURIComponent(title)}`;
     window.open(link, "_blank");
   } else if (type == 'pinterest') {
+    umengclick('share_to_pinterest')
     const { url, image, title } = shareConfig.value
     const link = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(title)}`;
     window.open(link, "_blank");
   }
+  umengclick('share_success')
 
 }
 </script>

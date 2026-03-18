@@ -10,9 +10,9 @@
                 <view class="t2">立即开始你的壁纸之旅</view>
                 <image src="/static/logo2.png" class="logo" />
                 <view class="bottom">
-                    <image src="/static/ios.png" mode="widthFix" />
-                    <image src="/static/apk.png" mode="widthFix" />
-                    <image src="/static/google.png" mode="widthFix" />
+                    <image src="/static/ios.png" mode="widthFix" @click="umengclick('to_appstore_click')"/>
+                    <image src="/static/apk.png" mode="widthFix" @click="umengclick('to_apk_click')" />
+                    <image src="/static/google.png" mode="widthFix" @click="umengclick('to_google_play_click')"/>
                 </view>
             </view>
             <view class="left">
@@ -25,6 +25,7 @@
 <script setup>
 import QRCode from '@/utils/qrcode.js'
 import { ref,onMounted,nextTick } from 'vue'
+import { umengclick } from '@/utils/umeng.js'
 const qrCodeUrl = ref('')
 const canvasWidth = ref(300)
 const canvasHeight = ref(300)
@@ -100,6 +101,7 @@ const generateQRCode = (type) => {
 const back = () => {
    
     uni.navigateBack()
+    umengclick('download_back')
 }
 onMounted(() => {
      console.log(111)
