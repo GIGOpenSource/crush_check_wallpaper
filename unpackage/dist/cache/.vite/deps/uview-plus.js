@@ -1,3 +1,5 @@
+import "./chunk-Y2F7D3TJ.js";
+
 // C:/Users/GIG/Desktop/crush_check_wallpaper/node_modules/uview-plus/libs/vue.js
 var defineMixin = (options) => {
   return options;

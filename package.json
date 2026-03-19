@@ -13,6 +13,7 @@
     "lang": "^0.1.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
+    "qrcode": "^1.5.4",
     "uview-plus": "^3.7.13"
   }
 }
