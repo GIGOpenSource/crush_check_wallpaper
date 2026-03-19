@@ -164,7 +164,8 @@ const getlist = () => {
 		let end = res.data.results.map(item => {
 			return {
 				...item,
-				show: false
+				show: false,
+				isImgError:false
 			}
 		})
 		list.value = [...list.value, ...end]

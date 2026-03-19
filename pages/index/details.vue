@@ -105,7 +105,14 @@ const getdetails = () => {
 const getlike = () => {
   guessLike(details.value.id).then(res => {
     console.log('猜你喜欢', res.data)
-    likeList.value = res.data
+    likeList.value = res.data.map(item => {
+      return {
+        ...item,
+        show: false,
+				isImgError:false
+
+      }
+    })
   })
 }
 //上一个

@@ -2,13 +2,16 @@
 	<view class="waterfall-container">
 		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index, item)"
 			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="index">
-			<image :src="item.url" mode="widthFix" />
-			<view class="mengceng" v-show="item.show">
+			<image :src="item.url" mode="widthFix"  @error="handleImgError(index)" @load="handleImgLoad(index)"/>
+			<view class="mengceng" v-show="item.show && item.isImgError">
 				<view class="name">{{ item.name }}</view>
 				<view class="right" @click.stop="downloadImage(item.url, item.name)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
 					<text>Download</text>
 				</view>
+			</view>
+			<view v-if="!item.isImgError" class="isImgError">
+			  <up-icon name="info-circle" color="#333333" size="20"></up-icon>
 			</view>
 		</view>
 
@@ -50,7 +53,7 @@ const props = defineProps({
 
 })
 const details = (index, item) => {
-	console.log(111)
+	 if(!item.isImgError) return
 	if (props.dataItem.tag_id) {
 		let params = {
 			...props.dataItem,
@@ -127,6 +130,12 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 		};
 	});
 };
+const  handleImgError = (index) => {
+    props.info[index].isImgError = false
+}
+const handleImgLoad = (index) => {
+  props.info[index].isImgError = true
+}
 
 </script>
 
@@ -141,6 +150,8 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 		margin-bottom: 20rpx;
 		position: relative;
 		border-radius: 20rpx;
+		overflow: hidden;
+		background: #f3f4f6;
 		overflow: hidden;
 
 		.mengceng {
@@ -179,7 +190,17 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 
 	image {
 		width: 100%;
-
+		vertical-align: middle;
+	}
+	.isImgError{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 
