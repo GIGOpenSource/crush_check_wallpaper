@@ -180,7 +180,7 @@ const getTags = () => {
 		pageSize: 10
 	}
 	getWallpapersTags(params).then(res => {
-		let data = [{name:'all',tag:''}]
+		let data = [{name:'All',tag:''}]
 		let end = res.data.results.map(item => {
 			return {
 				...item,
