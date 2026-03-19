@@ -7,7 +7,7 @@
 				<view class="name">{{ item.name }}</view>
 				<view class="right" @click.stop="downloadImage(item.url, item.name)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
-					<text>下载</text>
+					<text>Download</text>
 				</view>
 			</view>
 		</view>
@@ -17,7 +17,7 @@
 			<view>
 				<image src="/static/no-empt.png" mode="widthFix" />
 			</view>
-			<view class="t1">未找到相关搜索壁纸</view>
+			<view class="t1">No matching wallpapers found</view>
 		</view>
 </template>
 

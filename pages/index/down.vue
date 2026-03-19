@@ -2,12 +2,12 @@
   <view class="page">
     <view class="back" @click="back">
       <image src="/static/back.png" mode="widthFix" />
-      <text>返回首页</text>
+      <text>Back to Home</text>
     </view>
     <view class="content">
       <view class="right">
-        <view class="t1">WallpaperCicada移动端</view>
-        <view class="t2">立即开始你的壁纸之旅</view>
+        <view class="t1">WallpaperCicada Mobile</view>
+        <view class="t2">Start Your Wallpaper Journey Now</view>
         <image src="/static/logo2.png" class="logo" />
         <view class="bottom">
           <image src="/static/ios.png" mode="widthFix" @click="umengclick('to_appstore_click'),type = 1,show = true" />
@@ -22,10 +22,10 @@
   </view>
   <up-popup :show="show" @close="show = false" @open="show = true" mode="center" :round="20" :closeable="true">
     <view class="proup">
-      <view class="title">{{ shebei[type] }} APP下载二维码</view>
+      <view class="title">{{ shebei[type] }} APP Download QR Code</view>
       <view class="imageslist"><image :src="qrCodeUrl" class="logo" /></view>
       <view class="copy">
-        <view>扫描二维码下载壁纸{{shebei[type]}}客户端</view>
+        <view>Scan QR Code to Download Wallpaper {{shebei[type]}} Mobile</view>
       </view>
     </view>
   </up-popup>

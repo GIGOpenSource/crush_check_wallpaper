@@ -8,10 +8,10 @@
 					<view class="search" v-if="flag">
 						<view class="searchleft">
 						  <image src="/static/search.png" mode="widthFix" @click="search" />
-						<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search" @input="umengclick('search_input')">
+						<input type="text" placeholder="4K Wallpaper..." v-model="name" @confirm="search" @input="umengclick('search_input')">
 						</view>
 						<view class="type">
-							<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'"
+							<up-select v-model:current="media_live" :label="media_live ? 'Live' : 'Static'"
 								:options="cateList" @select="selectItem"></up-select>
 						</view>
 					</view>
@@ -19,13 +19,13 @@
 				</view>
 				<view class="topRight">
 					<view>
-						<up-select v-model:current="current" :label="current == 0 ? '电脑壁纸' : '手机壁纸'"
+						<up-select v-model:current="current" :label="current == 0 ? 'Desktop Wallpaper' : 'Mobile Wallpaper'"
 							:options="shebeiType" @select="choosetype"></up-select>
 					</view>
-					<text class="tiaokuan" @click="umengclick('click_term')">条款</text>
+					<text class="tiaokuan" @click="umengclick('click_term')">Terms</text>
 					<view class="btn" @click="uni.navigateTo({ url: '/pages/index/down' }),umengclick('click_download_mobile')">
 						<image src="/static/down.png" mode="widthFix" />
-						<text>下载移动端</text>
+						<text>Mobile Download</text>
 					</view>
 				</view>
 			</view>
@@ -66,11 +66,11 @@
 				<view class="search search1">
 				    <view class="searchleft">
 					  	<image src="/static/search2.png" mode="widthFix" @click="search" />
-					<input type="text" placeholder="电脑壁纸4K..." v-model="name" @confirm="search" @input="umengclick('search_input')"
+					<input type="text" placeholder="4K Wallpaper..." v-model="name" @confirm="search" @input="umengclick('search_input')"
 						placeholder-style="color:#fff">
 					</view>
 					<view class="type">
-						<up-select v-model:current="media_live" :label="media_live ? '动态' : '静态'" :options="cateList"
+						<up-select v-model:current="media_live" :label="media_live ? 'Live' : 'Static'" :options="cateList"
 							@select="selectItem"></up-select>
 					</view>
 				</view>
@@ -128,13 +128,13 @@ const tagNum = ref('') //总计
 const cateList = ref([
 	{
 		id: false,
-		name: '静态'
+		name: 'Static'
 	}, {
 		id: true,
-		name: '动态'
+		name: 'Live'
 	}
 ])
-const shebeiType = [{ id: 0, name: '电脑壁纸' }, { id: 1, name: '手机壁纸' }]
+const shebeiType = [{ id: 0, name: 'Desktop Wallpaper' }, { id: 1, name: 'Mobile Wallpaper' }]
 
 const chooseCurrent = ref(0)
 
@@ -158,7 +158,7 @@ const getlist = () => {
 		pageSize: 20,
 		name: name.value,
 		tag_id: tag_id.value,//标签id
-		media_live: media_live.value,//静态false或动态true
+		media_live: media_live.value,//Staticfalse或Livetrue
 		platform: current.value == 0 ? 'PC' : 'PHONE',
 	}
 	getWallpapersList(params).then(res => {

@@ -7,32 +7,32 @@
       <view  @click="up"><up-icon name="arrow-right" color="#000" size="20"></up-icon></view>
     </view>
     <view class="bottom">
-      <view> <text>尺寸：</text> {{ details.width }}*{{ details.height }} <text>宽高比：</text> {{ details.aspect_ratio }}
+      <view> <text>Size：</text> {{ details.width }}*{{ details.height }} <text>Aspect Ratio：</text> {{ details.aspect_ratio }}
       </view>
       <view class="bottomright">
         <view @click="downloadImage(details.url,details.name)">
           <image src="/static/down2.png" mode="widthFix" />
-          <text>下载</text>
+          <text>Download</text>
         </view>
         <view @click="share = true,umengclick('detail_share_click')">
           <image src="/static/share.png" mode="widthFix" />
-          <text>分享</text>
+          <text>Share</text>
         </view>
       </view>
     </view>
   </view>
-  <view class="title">相关推荐</view>
+  <view class="title">Related Recommendations</view>
   <images :info="likeList"></images>
   <up-popup :show="share" @close="share = false" @open="share = true" mode="center" :round="20" :closeable="true">
     <view class="proup">
-      <view class="p1">分享到你的社区</view>
+      <view class="p1">Share to Your Community</view>
       <view class="imageslist">
         <image v-for="(item, index) in imageslist" :key="index" :src="item.img" mode="widthFix"
           @click="share2(item.type)" />
       </view>
       <view class="copy">
         <view class="copyurl">{{ copyurl }}</view>
-        <view @click="copy">复制</view>
+        <view @click="copy">Copy</view>
       </view>
     </view>
   </up-popup>
