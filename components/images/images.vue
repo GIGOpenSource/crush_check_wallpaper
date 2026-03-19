@@ -11,14 +11,19 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 	<view v-if="info.length == 0" class="no-data">
-			<view>
-				<image src="/static/no-empt.png" mode="widthFix" />
-			</view>
-			<view class="t1">No matching wallpapers found</view>
+		<view>
+			<image src="/static/no-empt.png" mode="widthFix" />
 		</view>
+		<view class="t1">No matching wallpapers found</view>
+	</view>
+	<view class="loading" v-if="info.length !== 0">
+		<up-loading-icon text="加载中" textSize="16" size="24" v-if="tagspages < totalPages"></up-loading-icon>
+		<view v-if="tagspages == totalPages">没有更多了~</view>
+	</view>
+
 </template>
 
 <script setup>
@@ -32,7 +37,17 @@ const props = defineProps({
 	dataItem: {
 		type: Object,
 		default: () => ({})
-	}
+	},
+	tagspages: {
+		type: Number,
+		default: () => (1)
+	},//当前
+	totalPages: {
+		type: Number,
+		default: () => (10)
+	}//总的
+	
+
 })
 const details = (index, item) => {
 	console.log(111)
@@ -107,7 +122,7 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 
 		// 图片加载失败
 		image.onerror = (err) => {
-			 umengclick('download_fail')
+			umengclick('download_fail')
 			reject(`下载失败：${err.message}，可能是图片跨域限制或地址错误`);
 		};
 	});
@@ -167,22 +182,31 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 
 	}
 
-	
+
 }
+
 .no-data {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin-top: 10vh;
-		image {
-			width: 300rpx;
-		}
-		.t1{
-			margin-top: 40rpx;
-			color: #3D3D3D;
-			font-weight: 500;
-		}
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-top: 10vh;
+
+	image {
+		width: 300rpx;
 	}
+
+	.t1 {
+		margin-top: 40rpx;
+		color: #3D3D3D;
+		font-weight: 500;
+	}
+}
+
+.loading {
+	padding: 100rpx 0;
+	text-align: center;
+	color: #8c8c8c;
+}
 </style>

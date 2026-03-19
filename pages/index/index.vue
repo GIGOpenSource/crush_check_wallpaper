@@ -98,7 +98,7 @@
 			</view>
 		</view>
 		<!-- 内容 -->
-		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }"></images>
+		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }" :totalPages="totalPages" :tagspages="tagspages"></images>
 		
 	</view>
 </template>
@@ -118,7 +118,6 @@ const pages = ref(1)//当前页面
 const name = ref('')
 const list = ref([]) //壁纸列表
 const tagList = ref([]) //标签
-
 const tag_id = ref('')
 const media_live = ref(false)
 const totalPages = ref('') //总页码

@@ -22,7 +22,7 @@
     </view>
   </view>
   <view class="title">Related Recommendations</view>
-  <images :info="likeList"></images>
+  <images :info="likeList" :totalPages="1" :tagspages="1"></images>
   <up-popup :show="share" @close="share = false" @open="share = true" mode="center" :round="20" :closeable="true">
     <view class="proup">
       <view class="p1">Share to Your Community</view>
