@@ -188,10 +188,10 @@ const copy = () => {
     uni.setClipboardData({
         data: copyurl.value, 
         success: () => {
-          uni.showToast({ title: '复制成功', icon: 'none' });
+          uni.showToast({ title: 'Copy Success', icon: 'none' });
         },
         fail: (err) => {
-          uni.showToast({ title: '复制失败', icon: 'none' });
+          uni.showToast({ title: 'Copy Fail', icon: 'none' });
         }
       });
 }
