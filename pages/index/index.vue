@@ -98,7 +98,7 @@
 			</view>
 		</view>
 		<!-- 内容 -->
-		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }" :totalPages="totalPages" :tagspages="tagspages"></images>
+		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }" :totalPages="totalPages" :tagspages="pages"></images>
 		
 	</view>
 </template>
@@ -115,15 +115,16 @@ import { umengclick} from '@/utils/umeng.js'
 const current = ref(0)
 const catetory = ref(0)
 const pages = ref(1)//当前页面
+const totalPages = ref('') //总页码
 const name = ref('')
 const list = ref([]) //壁纸列表
 const tagList = ref([]) //标签
 const tag_id = ref('')
 const media_live = ref(false)
-const totalPages = ref('') //总页码
+
 
 const tagspages = ref(1) //标签当前页
-const tagNum = ref('') //总计
+const tagNum = ref('') //标签总计
 const cateList = ref([
 	{
 		id: false,
@@ -179,14 +180,21 @@ const getTags = () => {
 		pageSize: 10
 	}
 	getWallpapersTags(params).then(res => {
-		tagList.value = res.data.results.map(item => {
+		let data = [{name:'all',tag:''}]
+		let end = res.data.results.map(item => {
 			return {
 				...item,
 				name: item.nav_name
 			}
 		})
+		if(tagspages.value == 1){
+             tagList.value = [...data,...end]
+		}else{
+			 tagList.value = end
+		}
+		
 		tagNum.value = res.data.pagination.total_pages
-		tag_id.value = res.data.results[0].tag
+		tag_id.value = tagList.value[0].tag
 		init()
 	})
 
