@@ -2,16 +2,17 @@
 	<view class="waterfall-container">
 		<view class="waterfall-item" v-for="(item, index) in info" @click="details(index, item)"
 			@mouseover="handleMouseOver(index)" @mouseout="handleMouseOut(index)" :key="index">
-			<image :src="item.url" mode="widthFix"  @error="handleImgError(index)" @load="handleImgLoad(index)"/>
-			<view class="mengceng" v-show="item.show && item.isImgError">
+			<image v-if="!item.is_live" :src="item.thumb_url ||item.url" mode="widthFix"  @error="handleImgError(index)" @load="handleImgLoad(index)"/>
+			<video v-else :src="item.url" :id="`video-${item.id}`"></video>
+			<view class="mengceng" v-show="(item.show && !item.is_live && item.isImgError) || (item.show && item.is_live)">
 				<view class="name">{{ item.name }}</view>
-				<view class="right" @click.stop="downloadImage(item.url, item.name)">
+				<view class="right" @click.stop="downloadImage(item.url, item.name,item.is_live)">
 					<up-icon name="arrow-downward" color="#fff" size="16"></up-icon>
 					<text>Download</text>
 				</view>
 			</view>
-			<view v-if="!item.isImgError" class="isImgError">
-			  <up-icon name="info-circle" color="#333333" size="20"></up-icon>
+			<view v-if="!item.isImgError && !item.is_live" class="isImgError">
+				<up-icon name="info-circle" color="#333333" size="20"></up-icon>
 			</view>
 		</view>
 
@@ -48,13 +49,18 @@ const props = defineProps({
 	totalPages: {
 		type: Number,
 		default: () => (10)
-	}//总的
-	
+	},//总的
+	type: {
+		type: String,
+		default: '0'
+	}//类型
+
 
 })
 const details = (index, item) => {
-	 if(!item.isImgError) return
-	if (props.dataItem.tag_id) {
+	console.log(props.dataItem.tag_id,'props.dataItem.tag_iprops.dataItem.tag_i')
+	if (!item.isImgError) return
+	if (props.type == '0') {
 		let params = {
 			...props.dataItem,
 			currentPage: index + 1,
@@ -78,9 +84,16 @@ const handleMouseOver = (index) => {
 const handleMouseOut = (index) => {
 	props.info[index].show = false
 }
-const downloadImage = (url, name) => {
+const downloadImage = (url, name,status) => {
 	umengclick('wallpaper_hover_download_click')
-	downloadImageH5(url, name);
+	if(!status){
+     downloadImageH5(url, name);
+	} else{
+    downloadVideoH5(url,name)
+	}
+	
+	
+   
 }
 const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 	return new Promise((resolve, reject) => {
@@ -130,11 +143,63 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
 		};
 	});
 };
-const  handleImgError = (index) => {
-    props.info[index].isImgError = false
+// 完全仿照你图片下载逻辑写的 —— 终极下载视频（解决跨域 + 不打开播放）
+const downloadVideoH5 = (videoUrl, fileName = 'download_video') => {
+	return new Promise((resolve, reject) => {
+		try {
+			// 1. 处理本地路径（和你图片逻辑一样）
+			if (videoUrl.startsWith('uni://') || videoUrl.startsWith('/')) {
+				videoUrl = uni.env.BASE_URL + videoUrl;
+			}
+
+			// 2. 创建隐藏 iframe 下载（不跨域、不打开新页面）
+			const iframe = document.createElement('iframe');
+			iframe.style.display = 'none'; // 隐藏
+			iframe.src = videoUrl; // 视频地址
+
+			// 3. 监听 iframe 加载
+			iframe.onload = function () {
+				try {
+					// 强制触发下载
+					const a = document.createElement('a');
+					a.href = videoUrl;
+					a.download = `${fileName}.mp4`;
+					a.click();
+
+					// 成功
+					umengclick('download_success');
+					resolve('视频下载已开始');
+				} catch (e) {
+					throw e;
+				}
+
+				// 移除 iframe
+				setTimeout(() => {
+					document.body.removeChild(iframe);
+				}, 500);
+			};
+
+			// 加载失败
+			iframe.onerror = () => {
+				document.body.removeChild(iframe);
+				umengclick('download_fail');
+				reject('视频无法下载，服务器限制');
+			};
+
+			// 添加到页面
+			document.body.appendChild(iframe);
+
+		} catch (err) {
+			umengclick('download_fail');
+			reject('下载失败：浏览器限制');
+		}
+	});
+};
+const handleImgError = (index) => {
+	props.info[index].isImgError = false
 }
 const handleImgLoad = (index) => {
-  props.info[index].isImgError = true
+	props.info[index].isImgError = true
 }
 
 </script>
@@ -166,6 +231,7 @@ const handleImgLoad = (index) => {
 			padding: 0 20rpx;
 			box-sizing: border-box;
 			color: #fff;
+			z-index: 9999;
 
 			.name {
 				width: 70%;
@@ -192,7 +258,12 @@ const handleImgLoad = (index) => {
 		width: 100%;
 		vertical-align: middle;
 	}
-	.isImgError{
+
+	video {
+		width: 100%;
+	}
+
+	.isImgError {
 		position: absolute;
 		left: 0;
 		top: 0;

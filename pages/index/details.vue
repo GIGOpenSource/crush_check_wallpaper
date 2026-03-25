@@ -2,19 +2,21 @@
   <view class="top">
     <view class="name">{{ details.name }}</view>
     <view class="images">
-      <view  @click="back"><up-icon name="arrow-left" color="#000" size="20"></up-icon></view>
-      <image :src="details.url" mode="widthFix" />
-      <view  @click="up"><up-icon name="arrow-right" color="#000" size="20"></up-icon></view>
+      <view @click="back"><up-icon name="arrow-left" color="#000" size="20"></up-icon></view>
+      <image :src="details.thumb_url || details.url" mode="widthFix" v-if="!details.is_live"/>
+      <video :src="details.url" :id="`video-${details.id}`" v-else></video>
+      <view @click="up"><up-icon name="arrow-right" color="#000" size="20"></up-icon></view>
     </view>
     <view class="bottom">
-      <view> <text>Size：</text> {{ details.width }}*{{ details.height }} <text>Aspect Ratio：</text> {{ details.aspect_ratio }}
+      <view> <text>Size：</text> {{ details.width }}*{{ details.height }} <text>Aspect Ratio：</text> {{
+        details.aspect_ratio }}
       </view>
       <view class="bottomright">
-        <view @click="downloadImage(details.url,details.name)">
+        <view @click="downloadImage(details.url, details.name,details.is_live)">
           <image src="/static/down2.png" mode="widthFix" />
           <text>Download</text>
         </view>
-        <view @click="share = true,umengclick('detail_share_click')">
+        <view @click="share = true, umengclick('detail_share_click')">
           <image src="/static/share.png" mode="widthFix" />
           <text>Share</text>
         </view>
@@ -22,7 +24,7 @@
     </view>
   </view>
   <view class="title">Related Recommendations</view>
-  <images :info="likeList" :totalPages="1" :tagspages="1"></images>
+  <images :info="likeList" :totalPages="1" :tagspages="1" type="1"></images>
   <up-popup :show="share" @close="share = false" @open="share = true" mode="center" :round="20" :closeable="true">
     <view class="proup">
       <view class="p1">Share to Your Community</view>
@@ -76,7 +78,7 @@ const imageslist = [
   }
 ]
 const copyurl = ref('')
- usePageStay()
+usePageStay()
 onLoad((e) => {
   if (e.params) {
     let params = JSON.parse(decodeURIComponent(e.params))
@@ -90,7 +92,7 @@ onLoad((e) => {
     getlike()
   }
   let data1 = islike.value ? details.value : data.value
-copyurl.value = `https://markwallpapers.com#/pages/index/details?${islike.value ? 'like' : 'params'}=${encodeURIComponent(JSON.stringify(data1))}`
+  copyurl.value = `https://markwallpapers.com#/pages/index/details?${islike.value ? 'like' : 'params'}=${encodeURIComponent(JSON.stringify(data1))}`
 
 })
 const getdetails = () => {
@@ -109,7 +111,7 @@ const getlike = () => {
       return {
         ...item,
         show: false,
-				isImgError:false
+        isImgError: false
 
       }
     })
@@ -117,7 +119,7 @@ const getlike = () => {
 }
 //上一个
 const back = () => {
- 
+
   if (data.value.currentPage == 1) {
     data.value.currentPage = total.value
   } else {
@@ -127,7 +129,7 @@ const back = () => {
 }
 //下一个
 const up = () => {
-   umengclick('detail_swipe_right')
+  umengclick('detail_swipe_right')
   if (data.value.currentPage == total.value) {
     data.value.currentPage = 1
   } else {
@@ -135,12 +137,17 @@ const up = () => {
   }
   getdetails()
 }
-const downloadImage = (url,name) => {
+const downloadImage = (url, name,status) => {
   umengclick('detail_download_click')
-    downloadImageH5(url, name);
+  if(!status){
+      downloadImageH5(url, name);
+  }else{
+    downloadVideoH5(url, name)
+  }
+
 }
 const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
-   umengclick('download_start')
+  umengclick('download_start')
   return new Promise((resolve, reject) => {
     // 1. 处理本地图片路径（UniApp 本地路径转绝对路径）
     if (imgUrl.startsWith('uni://') || imgUrl.startsWith('/')) {
@@ -189,18 +196,71 @@ const downloadImageH5 = (imgUrl, fileName = 'download_img') => {
   });
 };
 
+// 完全仿照你图片下载逻辑写的 —— 终极下载视频（解决跨域 + 不打开播放）
+const downloadVideoH5 = (videoUrl, fileName = 'download_video') => {
+	return new Promise((resolve, reject) => {
+		try {
+			// 1. 处理本地路径（和你图片逻辑一样）
+			if (videoUrl.startsWith('uni://') || videoUrl.startsWith('/')) {
+				videoUrl = uni.env.BASE_URL + videoUrl;
+			}
+
+			// 2. 创建隐藏 iframe 下载（不跨域、不打开新页面）
+			const iframe = document.createElement('iframe');
+			iframe.style.display = 'none'; // 隐藏
+			iframe.src = videoUrl; // 视频地址
+
+			// 3. 监听 iframe 加载
+			iframe.onload = function () {
+				try {
+					// 强制触发下载
+					const a = document.createElement('a');
+					a.href = videoUrl;
+					a.download = `${fileName}.mp4`;
+					a.click();
+
+					// 成功
+					umengclick('download_success');
+					resolve('视频下载已开始');
+				} catch (e) {
+					throw e;
+				}
+
+				// 移除 iframe
+				setTimeout(() => {
+					document.body.removeChild(iframe);
+				}, 500);
+			};
+
+			// 加载失败
+			iframe.onerror = () => {
+				document.body.removeChild(iframe);
+				umengclick('download_fail');
+				reject('视频无法下载，服务器限制');
+			};
+
+			// 添加到页面
+			document.body.appendChild(iframe);
+
+		} catch (err) {
+			umengclick('download_fail');
+			reject('下载失败：浏览器限制');
+		}
+	});
+};
+
 //复制
 const copy = () => {
   umengclick('copy_link_click')
-    uni.setClipboardData({
-        data: copyurl.value, 
-        success: () => {
-          uni.showToast({ title: 'Copy Success', icon: 'none' });
-        },
-        fail: (err) => {
-          uni.showToast({ title: 'Copy Fail', icon: 'none' });
-        }
-      });
+  uni.setClipboardData({
+    data: copyurl.value,
+    success: () => {
+      uni.showToast({ title: 'Copy Success', icon: 'none' });
+    },
+    fail: (err) => {
+      uni.showToast({ title: 'Copy Fail', icon: 'none' });
+    }
+  });
 }
 //分享
 const share2 = (type) => {
@@ -263,6 +323,12 @@ const share2 = (type) => {
     image {
       width: 50%;
     }
+
+    video {
+      width: 50%;
+      height: 50vh;
+    }
+
 
     .left {
       background: #FFFFFF;
@@ -343,12 +409,13 @@ const share2 = (type) => {
     box-sizing: border-box;
     border-radius: 30rpx;
     font-size: 24rpx;
-    .copyurl{
+
+    .copyurl {
       width: 80%;
       display: -webkit-box;
-				overflow: hidden;
-				-webkit-line-clamp: 1;
-				-webkit-box-orient: vertical;
+      overflow: hidden;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
     }
   }
 }

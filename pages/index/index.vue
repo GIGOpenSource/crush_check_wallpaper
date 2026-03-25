@@ -98,7 +98,7 @@
 			</view>
 		</view>
 		<!-- 内容 -->
-		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }" :totalPages="totalPages" :tagspages="pages"></images>
+		<images :info="list" :dataItem="{ name, tag_id, media_live, platform: current == 0 ? 'PC' : 'PHONE' }" :totalPages="totalPages" :tagspages="pages" type="0"></images>
 		
 	</view>
 </template>
